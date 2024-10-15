@@ -22,6 +22,6 @@ python dqn.py
 - diffusion_model.py: define the IC propagation model
 - baseline_model.py: define the baseline methods
 - gnn.py: define the model structure of GNN
-- gnn-s.py: estimate the IS using GNN
+- gnn-is.py: estimate the IS using GNN
 - dqn.py: train the RL and test
 - compare.py: test the performance of the baseline methods
