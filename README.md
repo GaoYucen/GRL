@@ -17,7 +17,7 @@ cd <GRL>
 python dqn.py
 ```
 
-*Code Structure*
+###### *Code Structure*
 
 - diffusion_model.py: define the IC propagation model
 - baseline_model.py: define the baseline methods
