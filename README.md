@@ -4,10 +4,10 @@ The code is built under Python 3.11 and Pytorch 2.2.1
 
 ###### *Dataset*
 
-|       | Jazz | Cora-ML | Network Science | Twitch Gamers |
-| ----- | ---- | ------- | --------------- | ------------- |
-| Nodes | 198  | 1098    | 1565            | 1912          |
-| Edges | 2742 | 7981    | 13532           | 31299         |
+|       | Jazz | Network Science | Twitch Gamers | Digg      |
+| ----- | ---- | --------------- | ------------- |-----------|
+| Nodes | 198  | 1,565            | 1,912          | 279,613   |
+| Edges | 2,742 | 13,532           | 31,299         | 1,170,689 |
 
 ###### *Code*
 
