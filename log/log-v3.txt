@@ -1,0 +1,20 @@
+epoch:0
+loss:tensor(70.6805, device='mps:0', grad_fn=<MeanBackward0>)
+epoch:10
+loss:tensor(46.7374, device='mps:0', grad_fn=<MeanBackward0>)
+epoch:20
+loss:tensor(40.8172, device='mps:0', grad_fn=<MeanBackward0>)
+epoch:30
+loss:tensor(42.7402, device='mps:0', grad_fn=<MeanBackward0>)
+epoch:40
+loss:tensor(36.0628, device='mps:0', grad_fn=<MeanBackward0>)
+epoch:50
+loss:tensor(50.3400, device='mps:0', grad_fn=<MeanBackward0>)
+epoch:60
+loss:tensor(50.4859, device='mps:0', grad_fn=<MeanBackward0>)
+epoch:70
+loss:tensor(32.0621, device='mps:0', grad_fn=<MeanBackward0>)
+epoch:80
+loss:tensor(35.1771, device='mps:0', grad_fn=<MeanBackward0>)
+epoch:90
+loss:tensor(36.4485, device='mps:0', grad_fn=<MeanBackward0>)

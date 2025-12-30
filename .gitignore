@@ -1,0 +1,4 @@
+# .gitignore
+data/
+*.pkl
+*.csv
