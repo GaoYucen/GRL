@@ -4,7 +4,14 @@ import heapq
 import time
 import numpy as np
 from tqdm import tqdm
-from numba import njit
+
+try:
+    from numba import njit
+except ImportError:
+    def njit(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
 
 # ==========================================
 # Part 1: Numba 加速内核 (用于快速蒙特卡洛评估)

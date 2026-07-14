@@ -1,0 +1,23 @@
+dataset:
+  name: jazz
+  graph_path: data/NetHEPT.txt
+  directed: true
+
+diffusion:
+  model: IC
+  probability: 0.01
+  mc_runs_train: 100
+  mc_runs_eval: 1000
+
+seed:
+  budget: 10
+
+baselines:
+  methods:
+    - degree
+    - degree_discount
+
+experiment:
+  random_seed: 20260715
+  repeat: 1
+  output_dir: outputs/jazz
