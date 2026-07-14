@@ -17,9 +17,8 @@
 - `legacy/grl.py`：最早期 GRL 原型，使用简化 GNN + Dueling DQN。
 - `legacy/grl-v2.py`：引入更完整的训练/推理链路。
 - `legacy/grl-v3.py`：当前较新的组合实现，采用 FeatureDQN + GNN rerank。
-- `gnn.py`：偏独立的 GNN 影响范围估计脚本。
-- `gnn_celf.py`：GNN 驱动的 CELF 风格选择器。
-- `baselines.py`：传统影响最大化基线与高精度 MC 评估。
+- 当前主线代码位于 `scripts/` 与 `src/grl/`：前者负责实验入口，后者负责数据加载、扩散、基线、GNN、评估与诊断等模块化实现。
+- 历史上曾存在根目录脚本 `gnn.py`、`gnn_celf.py`、`baselines.py`，现已删除；相关能力已迁移到 `src/grl/` 或仅保留在 `legacy/` 供审计对照。
 
 ## 后续执行原则
 

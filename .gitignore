@@ -1,13 +1,26 @@
 __pycache__/
 *.py[cod]
+*.pyo
+*.pyd
 .DS_Store
 .idea/
 .vscode/
+参考材料/
+
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+venv/
+.venv/
+env/
 
 outputs/*
 !outputs/.gitkeep
 
 checkpoints/*
 !checkpoints/.gitkeep
+
+log/
 
 *.log

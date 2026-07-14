@@ -1,7 +1,9 @@
 dataset:
-  name: jazz
-  graph_path: data/NetHEPT.txt
+  name: twitter
+  graph_path: data/twitter-d.txt
   directed: true
+  expected_num_nodes: null
+  expected_num_edges: null
 
 diffusion:
   model: IC
@@ -20,4 +22,4 @@ baselines:
 experiment:
   random_seed: 20260715
   repeat: 1
-  output_dir: outputs/jazz
+  output_dir: outputs/twitter

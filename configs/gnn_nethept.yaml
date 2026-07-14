@@ -1,0 +1,49 @@
+dataset:
+  name: nethept
+  graph_path: data/NetHEPT.txt
+  directed: true
+  expected_num_nodes: null
+  expected_num_edges: null
+
+diffusion:
+  model: IC
+  probability: 0.01
+  mc_runs_train: 30
+  mc_runs_eval: 100
+
+seed:
+  budget: 10
+
+baselines:
+  methods:
+    - degree
+    - degree_discount
+
+gnn:
+  device: cpu
+  model_dir: param
+  embedding_dim: 64
+  hidden_dim: 64
+  samples: 32
+  batch_size: 8
+  epochs: 1
+  learning_rate: 0.001
+  mc_runs_train: 10
+  mc_runs_eval: 30
+  eval_node_count: 20
+  top_degree_pool: 200
+  walk_length: 10
+  num_walks: 10
+  window: 10
+  workers: 1
+
+oracle:
+  mc_runs: 5
+  candidate_pool_size: 10
+  max_nodes: 200
+  step_limit: 5
+
+experiment:
+  random_seed: 20260715
+  repeat: 1
+  output_dir: outputs/nethept

@@ -4,14 +4,14 @@
 
 | 论文模块 | 论文描述 | 当前代码文件 | 当前类或函数 | 是否一致 | 后续处理 |
 |---|---|---|---|---|---|
-| Node2Vec 节点表示 | 节点嵌入 | `legacy/grl.py` / `legacy/grl-v2.py` / `legacy/grl-v3.py` / `gnn.py` | `train_node2vec`, `get_features` | 部分一致 | 保留并统一接口 |
-| GNN 影响估计 | 预测种子集合影响范围 | `legacy/grl-v3.py`, `gnn.py`, `gnn_celf.py` | `ISEstimatorGNN`, `GCNEstimator` | 部分一致 | 后续审计输入/输出定义 |
+| Node2Vec 节点表示 | 节点嵌入 | `legacy/grl.py` / `legacy/grl-v2.py` / `legacy/grl-v3.py` / `src/grl/models/gnn.py` | `train_node2vec`, `get_features`, `load_or_create_node2vec_embeddings` | 部分一致 | 保留并统一接口 |
+| GNN 影响估计 | 预测种子集合影响范围 | `legacy/grl-v3.py`, `src/grl/models/gnn.py`, `src/grl/training/gnn_trainer.py`, `src/grl/evaluation/gnn_metrics.py` | `SpreadPredictorGNN`, `GNNTrainer`, `evaluate_trained_gnn` | 部分一致 | 后续审计输入/输出定义 |
 | Rainbow DQN | RL 主体 | `legacy/grl.py`, `legacy/grl-v2.py`, `legacy/grl-v3.py` | `DuelingDQN`, `FeatureDQN` | 不一致 | 当前仅为简化 DQN/FeatureDQN，未完整实现 Rainbow |
 | GNN 奖励 | IS 增量作为 reward | `legacy/grl-v2.py`, `legacy/grl-v3.py` | `train_rl_agent` | 基本一致 | 需验证奖励是否完全对应论文定义 |
 | Top-k 候选 | Q 值最高候选 | `legacy/grl-v2.py`, `legacy/grl-v3.py` | `joint_inference` | 一致 | 后续加入候选召回评估 |
 | Gated Fusion | 融合 Q 与 IS 增量 | `legacy/grl-v2.py`, `legacy/grl-v3.py` | `joint_inference` | 不一致 | 当前为固定权重融合，不是可学习门控 |
-| IC/LT 扩散 | 传播仿真 | `legacy/grl.py`, `legacy/grl-v2.py`, `legacy/grl-v3.py`, `gnn.py`, `baselines.py` | `run_ic_simulation`, `fast_ic_simulation` | 部分一致 | 当前主要是 IC，需要统一接口并预留 LT |
-| 传统基线 | Degree / Degree Discount / CELF / IMM | `baselines.py` | `IMBaselines` | 基本一致 | 可作为统一实验入口的 baseline 模块 |
+| IC/LT 扩散 | 传播仿真 | `legacy/grl.py`, `legacy/grl-v2.py`, `legacy/grl-v3.py`, `src/grl/diffusion/independent_cascade.py` | `estimate_spread` 等 | 部分一致 | 当前主要是 IC，需要统一接口并预留 LT |
+| 传统基线 | Degree / Degree Discount / CELF / IMM | `src/grl/baselines/`（当前主线） + 已删除的历史 `baselines.py` | `select_high_degree_nodes`, `select_degree_discount_nodes`, `IMBaselines` | 基本一致 | 主线已切换到模块化 baseline；CELF/IMM 仍以历史实现为主 |
 | `grl.py`/`grl-v2.py`/`grl-v3.py` 关系 | 对应哪一阶段实验 | `legacy/` | 脚本级 | 待确认 | 需要结合论文表格与历史提交继续审计 |
 
 ## 初步结论
@@ -19,7 +19,8 @@
 1. 当前仓库**没有完整 Rainbow DQN** 实现；
 2. 当前仓库**没有可学习 gated fusion**，只有手工加权；
 3. 当前 GNN 主要学习 **总 Influence Spread**，边际增益通过差分得到；
-4. 当前代码结构尚未形成统一配置系统与标准实验输出流程。
+4. 当前主线代码已经形成以 `scripts/ + src/grl/ + configs/` 为核心的统一配置与实验入口；
+5. 根目录旧脚本 `baselines.py`、`gnn.py`、`gnn_celf.py` 已移除，不再属于当前执行链路。
 
 ## 后续补充项
 

@@ -1,7 +1,9 @@
 dataset:
-  name: digg
-  graph_path: data/epinions-d-5.txt
+  name: nethept
+  graph_path: data/NetHEPT.txt
   directed: true
+  expected_num_nodes: null
+  expected_num_edges: null
 
 diffusion:
   model: IC
@@ -20,4 +22,4 @@ baselines:
 experiment:
   random_seed: 20260715
   repeat: 1
-  output_dir: outputs/digg
+  output_dir: outputs/nethept

@@ -2,6 +2,8 @@ dataset:
   name: network_science
   graph_path: data/network.txt
   directed: true
+  expected_num_nodes: null
+  expected_num_edges: null
 
 diffusion:
   model: IC

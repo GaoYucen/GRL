@@ -1,7 +1,9 @@
 dataset:
-  name: twitch
-  graph_path: data/twitter-d.txt
+  name: epinions
+  graph_path: data/epinions-d-5.txt
   directed: true
+  expected_num_nodes: null
+  expected_num_edges: null
 
 diffusion:
   model: IC
@@ -20,4 +22,4 @@ baselines:
 experiment:
   random_seed: 20260715
   repeat: 1
-  output_dir: outputs/twitch
+  output_dir: outputs/epinions
