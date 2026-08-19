@@ -22,6 +22,7 @@ outputs/*
 !outputs/first_smoke/
 !outputs/first_smoke/network_science/
 !outputs/first_smoke/network_science/first_round_results.json
+outputs/first_smoke/network_science/config.yaml
 outputs/first_smoke/network_science/checkpoints/
 outputs/first_smoke/network_science/training/
 
