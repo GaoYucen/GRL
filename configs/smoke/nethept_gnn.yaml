@@ -1,0 +1,30 @@
+dataset:
+  name: nethept
+  graph_path: data/NetHEPT.txt
+  directed: true
+  expected_num_nodes: null
+  expected_num_edges: null
+diffusion:
+  model: IC
+  probability: 0.01
+  mc_runs_train: 3
+  mc_runs_eval: 5
+seed:
+  budget: 3
+gnn:
+  device: cpu
+  model_dir: param
+  embedding_dim: 16
+  hidden_dim: 16
+  samples: 12
+  batch_size: 4
+  epochs: 1
+  learning_rate: 0.001
+  mc_runs_train: 3
+  walk_length: 5
+  num_walks: 2
+  window: 3
+  workers: 1
+experiment:
+  random_seed: 20260715
+  output_dir: outputs/smoke/nethept

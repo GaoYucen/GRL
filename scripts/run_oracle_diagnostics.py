@@ -13,7 +13,7 @@ if str(SRC_ROOT) not in sys.path:
 
 from grl.data import load_graph_from_config
 from grl.diagnostics import run_oracle_diagnostics
-from grl.utils import load_yaml_config, set_random_seed
+from grl.utils import build_run_metadata, load_yaml_config, set_random_seed
 
 
 def main() -> None:
@@ -24,6 +24,7 @@ def main() -> None:
     set_random_seed(int(config["experiment"]["random_seed"]))
     graph_data = load_graph_from_config(config)
     results = run_oracle_diagnostics(graph_data, config)
+    results["metadata"] = build_run_metadata(args.config, config, PROJECT_ROOT, "marginal_gain_predictor_v1")
 
     output_dir = Path(config["experiment"]["output_dir"]) / datetime.now().strftime("%Y%m%d_%H%M%S") / "oracle"
     output_dir.mkdir(parents=True, exist_ok=True)

@@ -1,3 +1,4 @@
-from .gnn_trainer import GNNTrainer
+from .marginal_dataset import MarginalGainSample, build_marginal_dataset
+from .marginal_trainer import MarginalGainArtifacts, MarginalGainTrainer
 
-__all__ = ["GNNTrainer"]
+__all__ = ["MarginalGainSample", "build_marginal_dataset", "MarginalGainArtifacts", "MarginalGainTrainer"]

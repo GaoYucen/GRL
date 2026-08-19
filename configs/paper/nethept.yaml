@@ -1,0 +1,18 @@
+dataset:
+  name: nethept
+  graph_path: data/NetHEPT.txt
+  directed: true
+  expected_num_nodes: null
+  expected_num_edges: null
+diffusion:
+  model: IC
+  probability: 0.01
+  mc_runs_train: 100
+  mc_runs_eval: 1000
+seed:
+  budgets: [10, 20, 50]
+  budget: 10
+experiment:
+  seeds: [1, 2, 3, 4, 5]
+  random_seed: 1
+  output_dir: outputs/paper/nethept

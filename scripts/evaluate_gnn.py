@@ -10,7 +10,7 @@ if str(SRC_ROOT) not in sys.path:
 
 from grl.data import load_graph_from_config
 from grl.evaluation.gnn_metrics import evaluate_trained_gnn
-from grl.utils import load_yaml_config, set_random_seed
+from grl.utils import build_run_metadata, load_yaml_config, set_random_seed
 
 
 def main() -> None:
@@ -21,6 +21,7 @@ def main() -> None:
     set_random_seed(int(config["experiment"]["random_seed"]))
     graph_data = load_graph_from_config(config)
     metrics = evaluate_trained_gnn(graph_data, config)
+    metrics["metadata"] = build_run_metadata(args.config, config, PROJECT_ROOT, "marginal_gain_predictor_v1")
     print(json.dumps(metrics, ensure_ascii=False, indent=2))
 
 

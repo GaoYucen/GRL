@@ -14,7 +14,7 @@ if str(SRC_ROOT) not in sys.path:
 from grl.baselines import select_degree_discount_nodes, select_high_degree_nodes
 from grl.data import load_graph_from_config
 from grl.evaluation import evaluate_baseline_method
-from grl.utils import load_yaml_config, set_random_seed
+from grl.utils import build_run_metadata, load_yaml_config, set_random_seed
 
 
 def ensure_output_dir(base_dir: str) -> Path:
@@ -50,10 +50,11 @@ def main():
 
     dataset_name = config["dataset"]["name"]
     graph_path = config["dataset"]["graph_path"]
-    budget = int(config["seed"]["budget"])
     mc_eval = int(config["diffusion"]["mc_runs_eval"])
     probability = float(config["diffusion"]["probability"])
     methods = config.get("baselines", {}).get("methods", ["degree", "degree_discount"])
+    budgets = [int(value) for value in config.get("seed", {}).get("budgets", [config["seed"]["budget"]])]
+    seeds = [int(value) for value in config.get("experiment", {}).get("seeds", [config["experiment"]["random_seed"]])]
     random_seed = int(config["experiment"]["random_seed"])
     output_base = config["experiment"]["output_dir"]
 
@@ -65,8 +66,13 @@ def main():
 
     graph_data = load_graph_from_config(config)
     results = []
-    for method in methods:
-        results.append(run_method(graph_data, method, budget, mc_eval, probability, random_seed))
+    for budget in budgets:
+        for run_seed in seeds:
+            for method in methods:
+                item = run_method(graph_data, method, min(budget, graph_data.num_nodes), mc_eval, probability, run_seed)
+                item["budget"] = budget
+                item["random_seed"] = run_seed
+                results.append(item)
 
     metrics = {
         "dataset": dataset_name,
@@ -74,12 +80,14 @@ def main():
         "directed": graph_data.directed,
         "num_nodes": graph_data.num_nodes,
         "num_edges": graph_data.num_edges,
-        "budget": budget,
+        "budgets": budgets,
+        "seeds": seeds,
         "diffusion_model": "independent_cascade",
         "probability": probability,
         "mc_runs_eval": mc_eval,
         "random_seed": random_seed,
         "results": results,
+        "metadata": build_run_metadata(config_path, config, PROJECT_ROOT, "baseline_selector_v1"),
     }
 
     with (out_dir / "metrics.json").open("w", encoding="utf-8") as f:

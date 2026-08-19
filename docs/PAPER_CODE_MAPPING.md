@@ -5,7 +5,7 @@
 | 论文模块 | 论文描述 | 当前代码文件 | 当前类或函数 | 是否一致 | 后续处理 |
 |---|---|---|---|---|---|
 | Node2Vec 节点表示 | 节点嵌入 | `legacy/grl.py` / `legacy/grl-v2.py` / `legacy/grl-v3.py` / `src/grl/models/gnn.py` | `train_node2vec`, `get_features`, `load_or_create_node2vec_embeddings` | 部分一致 | 保留并统一接口 |
-| GNN 影响估计 | 预测种子集合影响范围 | `legacy/grl-v3.py`, `src/grl/models/gnn.py`, `src/grl/training/gnn_trainer.py`, `src/grl/evaluation/gnn_metrics.py` | `SpreadPredictorGNN`, `GNNTrainer`, `evaluate_trained_gnn` | 部分一致 | 后续审计输入/输出定义 |
+| 边际增益预测 | 预测 `Delta(v | S)` | `src/grl/models/marginal_gain.py`, `src/grl/training/marginal_dataset.py`, `src/grl/training/marginal_trainer.py`, `src/grl/evaluation/gnn_metrics.py` | `MarginalGainPredictor`, `MarginalGainTrainer`, `evaluate_marginal_gain_predictor` | 一致 | 后续接入 FeatureDQN 检索重排 |
 | Rainbow DQN | RL 主体 | `legacy/grl.py`, `legacy/grl-v2.py`, `legacy/grl-v3.py` | `DuelingDQN`, `FeatureDQN` | 不一致 | 当前仅为简化 DQN/FeatureDQN，未完整实现 Rainbow |
 | GNN 奖励 | IS 增量作为 reward | `legacy/grl-v2.py`, `legacy/grl-v3.py` | `train_rl_agent` | 基本一致 | 需验证奖励是否完全对应论文定义 |
 | Top-k 候选 | Q 值最高候选 | `legacy/grl-v2.py`, `legacy/grl-v3.py` | `joint_inference` | 一致 | 后续加入候选召回评估 |
@@ -18,7 +18,7 @@
 
 1. 当前仓库**没有完整 Rainbow DQN** 实现；
 2. 当前仓库**没有可学习 gated fusion**，只有手工加权；
-3. 当前 GNN 主要学习 **总 Influence Spread**，边际增益通过差分得到；
+3. 当前主线模型直接学习条件边际增益 `Delta(v | S)`；
 4. 当前主线代码已经形成以 `scripts/ + src/grl/ + configs/` 为核心的统一配置与实验入口；
 5. 根目录旧脚本 `baselines.py`、`gnn.py`、`gnn_celf.py` 已移除，不再属于当前执行链路。
 

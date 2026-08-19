@@ -103,22 +103,31 @@ pytest
 - GRL / DQN
 - FeatureDQN
 
-## 第二阶段：独立 GNN
+## 第二阶段：边际增益预测器
 
-可以使用以下命令训练和评估独立 GNN：
+当前主线模型不是预测总 spread，而是直接预测给定 seed set `S` 下候选节点 `v` 的条件边际增益：
+
+```text
+Delta(v | S) = sigma(S union {v}) - sigma(S)
+```
+
+可以使用以下命令训练和评估边际增益预测器：
 
 ```bash
 PYTHONPATH=src python scripts/train_gnn.py --config configs/gnn_nethept.yaml
 PYTHONPATH=src python scripts/evaluate_gnn.py --config configs/gnn_nethept.yaml
 ```
 
-当前评估会输出：
+当前模型直接学习 `Delta(v | S)`，评估会输出：
 
 - MAE / RMSE
 - Spearman / Kendall 排名相关
 - Top-K 召回率
-- GNN 选种后的真实 spread
-- 与 Degree / Degree Discount 的对比
+- pairwise ranking accuracy
+- Top-K 召回率
+- 条件候选排序指标
+
+边际增益标签使用 common live-edge sampling 生成，使 `sigma(S)` 和 `sigma(S union {v})` 使用同一组扩散样本，避免由于 Monte Carlo 随机噪声产生负边际增益标签。
 
 ## 第三阶段：Oracle 诊断实验
 
@@ -138,6 +147,56 @@ PYTHONPATH=src python scripts/run_oracle_diagnostics.py --config configs/gnn_net
 
 当前仓库默认提供的是 **smoke-test 级 Oracle 配置**，会限制候选池、节点子集和步数，避免在大图上直接做全图暴力 oracle 导致运行时间过长。
 
+边际增益数据集可以单独生成：
+
+```bash
+PYTHONPATH=src python scripts/build_marginal_dataset.py \
+  --config configs/smoke/nethept_gnn.yaml \
+  --output /tmp/nethept_marginal_dataset.json
+```
+
+`configs/smoke/` 用于快速验证，`configs/paper/` 提供多 budget、多随机种子的实验字段。
+
+## 首轮小规模实验
+
+首轮流程验证使用小型 `network_science` 图、单个随机种子和低 MC 次数。运行：
+
+```bash
+PYTHONPATH=src python scripts/run_first_smoke.py \
+  --config configs/smoke/network_science_first_round.yaml
+```
+
+该入口依次完成：
+
+1. Degree / Degree Discount baseline；
+2. 边际增益数据集生成；
+3. `MarginalGainPredictor` 训练与测试集评估；
+4. sequential regret 评估；
+5. candidate loss / ranking loss oracle 诊断。
+
+结果保存在：
+
+```text
+outputs/first_smoke/network_science/first_round_results.json
+```
+
+`outputs/` 默认被 `.gitignore` 忽略，因此实验结果不会自动进入 Git 提交。首轮实际运行结果如下：
+
+| 指标 | 结果 |
+|---|---:|
+| Degree spread | 20.73 |
+| Degree Discount spread | 21.60 |
+| MarginalGain MAE | 1.440 |
+| MarginalGain RMSE | 1.916 |
+| Spearman | -0.377 |
+| Kendall | -0.267 |
+| Pairwise accuracy | 0.357 |
+| Top-1 recall | 0.000 |
+| Top-5 recall | 0.800 |
+| Sequential cumulative regret | 31.50 |
+
+本轮结果的主要用途是验证代码链路，而不是证明模型已经优于 baseline。结果显示数据集生成、模型训练、sequential 评估和 oracle loss 分解均正常，但在极少样本、低 MC、仅 2 个 epoch 的设置下，边际增益模型排序能力较弱。下一步应增加样本量、MC 次数和训练轮数后，再进行 NetHEPT 单 seed 实验。
+
 ## 文档
 
 - `docs/DEVELOPMENT_PLAN.md`
@@ -148,7 +207,8 @@ PYTHONPATH=src python scripts/run_oracle_diagnostics.py --config configs/gnn_net
 
 后续将继续推进：
 
-1. 建立 GNN 单独评估流程；
-2. 补充 Oracle 诊断实验；
-3. 重构并对齐模块化 GRL v3；
-4. 进一步探索集合条件化边际增益模型。
+1. 增加边际增益训练样本和 MC 次数；
+2. 在 NetHEPT 上进行单 seed 验证；
+3. 比较候选召回误差与模型排序误差；
+4. 重构并对齐模块化 GRL v3；
+5. 进一步接入 FeatureDQN、CELF/IMM 和完整 GRL pipeline。

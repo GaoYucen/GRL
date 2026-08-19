@@ -42,8 +42,8 @@
   - 数据集检查入口
   - 用于确认图路径、节点数、边数、连通分量等统计是否与预期一致
 - `scripts/train_gnn.py`
-  - 独立 GNN 训练入口
-  - 负责训练传播范围预测模型，并保存模型与训练指标
+  - 边际增益预测器训练入口
+  - 负责训练 `Delta(v | S)` 模型，并保存模型与训练指标
 - `scripts/evaluate_gnn.py`
   - 独立 GNN 评估入口
   - 输出 MAE / RMSE / 排名相关 / Top-K 召回等指标
@@ -73,10 +73,10 @@
   - 包含 baseline spread 评估，以及 GNN 指标评估
 - `src/grl/models/`
   - 模型定义与特征构造
-  - 当前主线包含 GNN 预测器、Node2Vec 嵌入加载/构造等能力
+  - 当前主线包含 seed-conditioned 边际增益预测器、Node2Vec 嵌入加载/构造等能力
 - `src/grl/training/`
-  - 训练流程封装
-  - 当前主要是 `GNNTrainer`
+  - 训练流程与边际增益数据集生成
+  - 当前主线是 `MarginalGainTrainer` 与 `build_marginal_dataset`
 - `src/grl/diagnostics/`
   - Oracle 诊断相关逻辑
 - `src/grl/utils/`

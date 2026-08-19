@@ -12,8 +12,8 @@ if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
 from grl.data import load_graph_from_config
-from grl.training import GNNTrainer
-from grl.utils import load_yaml_config, set_random_seed
+from grl.training import MarginalGainTrainer
+from grl.utils import build_run_metadata, load_yaml_config, set_random_seed
 
 
 def main() -> None:
@@ -27,15 +27,16 @@ def main() -> None:
     output_dir = Path(config["experiment"]["output_dir"]) / datetime.now().strftime("%Y%m%d_%H%M%S") / "gnn_train"
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    trainer = GNNTrainer(graph_data, config)
+    trainer = MarginalGainTrainer(graph_data, config)
     metrics, artifacts = trainer.train(output_dir)
 
     with (output_dir / "config.yaml").open("w", encoding="utf-8") as f:
         yaml.safe_dump(config, f, allow_unicode=True, sort_keys=False)
+    metrics["metadata"] = build_run_metadata(args.config, config, PROJECT_ROOT, "marginal_gain_predictor_v1")
     with (output_dir / "metrics.json").open("w", encoding="utf-8") as f:
         json.dump(metrics, f, ensure_ascii=False, indent=2)
     with (output_dir / "artifacts.json").open("w", encoding="utf-8") as f:
-        json.dump({"model_path": str(artifacts.model_path), "embedding_path": str(artifacts.embedding_path)}, f, ensure_ascii=False, indent=2)
+        json.dump({"model_path": str(artifacts.model_path), "embedding_path": str(artifacts.embedding_path), "dataset_path": str(artifacts.dataset_path)}, f, ensure_ascii=False, indent=2)
 
     print(f"GNN training finished. Outputs saved to: {output_dir}")
 

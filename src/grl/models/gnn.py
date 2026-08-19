@@ -27,8 +27,7 @@ def _build_fallback_embeddings(graph: nx.Graph | nx.DiGraph) -> torch.Tensor:
     max_out = max(out_degrees.values(), default=1) or 1
     max_in = max(in_degrees.values(), default=1) or 1
     max_pr = max(pagerank.values(), default=1.0) or 1.0
-    for node in graph.nodes():
-        node = int(node)
+    for index, node in enumerate(graph.nodes()):
         base = np.array([
             out_degrees.get(node, 0) / max_out,
             in_degrees.get(node, 0) / max_in,
@@ -36,7 +35,7 @@ def _build_fallback_embeddings(graph: nx.Graph | nx.DiGraph) -> torch.Tensor:
             pagerank.get(node, 0.0) / max_pr,
         ], dtype=np.float32)
         tiled = np.tile(base, 16)
-        embeddings[node] = tiled[:64]
+        embeddings[index] = tiled[:64]
     return torch.tensor(embeddings, dtype=torch.float32)
 
 
@@ -72,10 +71,11 @@ def load_or_create_node2vec_embeddings(
     )
     model = node2vec.fit(window=window, min_count=1, batch_words=4)
     emb_matrix = np.zeros((graph.number_of_nodes(), dimensions), dtype=np.float32)
+    node_to_idx = {node: index for index, node in enumerate(graph.nodes())}
     for node in graph.nodes():
         key = str(node)
         if key in model.wv:
-            emb_matrix[int(node)] = model.wv[key]
+            emb_matrix[node_to_idx[node]] = model.wv[key]
     embeddings = torch.tensor(emb_matrix, dtype=torch.float32)
     embeddings = F.normalize(embeddings, p=2, dim=1)
     torch.save(embeddings, cache_path)
@@ -87,8 +87,8 @@ def build_node_features(graph: nx.Graph | nx.DiGraph, device: str | torch.device
     degrees = dict(degree_view)
     max_degree = max(degrees.values(), default=1) or 1
     norm_degrees = torch.zeros((graph.number_of_nodes(), 1), dtype=torch.float32, device=device)
-    for node in graph.nodes():
-        norm_degrees[int(node), 0] = degrees.get(node, 0) / max_degree
+    for index, node in enumerate(graph.nodes()):
+        norm_degrees[index, 0] = degrees.get(node, 0) / max_degree
     return norm_degrees, torch.tensor([max_degree], dtype=torch.float32, device=device)
 
 

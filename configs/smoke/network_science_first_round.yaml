@@ -1,0 +1,45 @@
+dataset:
+  name: network_science
+  graph_path: data/network.txt
+  directed: true
+  expected_num_nodes: null
+  expected_num_edges: null
+
+diffusion:
+  model: IC
+  probability: 0.01
+  mc_runs_train: 5
+  mc_runs_eval: 30
+
+seed:
+  budget: 3
+
+gnn:
+  device: cpu
+  model_dir: outputs/first_smoke/network_science/checkpoints
+  embedding_dim: 16
+  hidden_dim: 32
+  samples: 48
+  batch_size: 8
+  epochs: 2
+  learning_rate: 0.001
+  mc_runs_train: 5
+  walk_length: 5
+  num_walks: 2
+  window: 3
+  workers: 1
+
+oracle:
+  mc_runs: 10
+  candidate_pool_size: 8
+  max_nodes: 30
+  step_limit: 3
+
+baselines:
+  methods:
+    - degree
+    - degree_discount
+
+experiment:
+  random_seed: 20260715
+  output_dir: outputs/first_smoke/network_science

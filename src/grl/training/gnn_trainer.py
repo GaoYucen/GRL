@@ -14,7 +14,7 @@ import torch.optim as optim
 
 from grl.baselines import select_degree_discount_nodes
 from grl.diffusion import estimate_spread
-from grl.models import SpreadPredictorGNN, build_node_features, load_or_create_node2vec_embeddings
+from grl.models.gnn import SpreadPredictorGNN, build_node_features, load_or_create_node2vec_embeddings
 
 
 @dataclass

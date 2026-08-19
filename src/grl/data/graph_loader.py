@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -25,6 +25,23 @@ class GraphData:
     max_degree: int
     connected_components: int
     largest_component_size: int
+    node_to_idx: dict[int, int] = field(default_factory=dict)
+    idx_to_node: list[int] = field(default_factory=list)
+
+    def to_index(self, node: int) -> int:
+        """Convert an original node id to the contiguous internal index."""
+        if self.node_to_idx:
+            return self.node_to_idx[node]
+        return int(node)
+
+    def to_original(self, index: int) -> int:
+        """Convert an internal index back to the original node id."""
+        if self.idx_to_node:
+            return self.idx_to_node[int(index)]
+        return int(index)
+
+    def restore_nodes(self, indices: list[int]) -> list[int]:
+        return [self.to_original(index) for index in indices]
 
 
 def _build_graph(directed: bool) -> nx.Graph | nx.DiGraph:
@@ -97,7 +114,15 @@ def load_graph_from_config(config: dict[str, Any]) -> GraphData:
     directed = bool(dataset.get("directed", True))
     default_probability = float(diffusion.get("probability", 0.01))
 
-    graph, duplicate_edges = _parse_graph_file(graph_path, directed, default_probability)
+    raw_graph, duplicate_edges = _parse_graph_file(graph_path, directed, default_probability)
+    idx_to_node = list(raw_graph.nodes())
+    node_to_idx = {node: index for index, node in enumerate(idx_to_node)}
+    graph = nx.relabel_nodes(
+        raw_graph,
+        node_to_idx,
+        copy=True,
+    )
+    nx.set_node_attributes(graph, {index: node for index, node in enumerate(idx_to_node)}, "original_id")
     _validate_expected_counts(
         graph,
         dataset.get("expected_num_nodes"),
@@ -122,4 +147,6 @@ def load_graph_from_config(config: dict[str, Any]) -> GraphData:
         max_degree=max_degree,
         connected_components=components,
         largest_component_size=largest_component,
+        node_to_idx=node_to_idx,
+        idx_to_node=idx_to_node,
     )
