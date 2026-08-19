@@ -1,0 +1,582 @@
+{
+  "metadata": {
+    "config_path": "configs/smoke/network_science_first_round.yaml",
+    "dataset": "network_science",
+    "random_seed": 20260715,
+    "model_version": "marginal_gain_predictor_v1",
+    "timestamp_utc": "2026-08-19T03:56:45.133464+00:00",
+    "git_commit": "134191623e4f97b675ce2b3946fe1274d956c1a9"
+  },
+  "graph": {
+    "dataset": "network_science",
+    "num_nodes": 62,
+    "num_edges": 159,
+    "node_indexing": "contiguous_internal_indices"
+  },
+  "baselines": [
+    {
+      "method": "degree",
+      "selected_seeds": [
+        48,
+        56,
+        43
+      ],
+      "spread_mean": 20.733333333333334,
+      "spread_std": 4.2263722294921235,
+      "selection_time_seconds": 0.0002086249878630042,
+      "evaluation_time_seconds": 0.004754874971695244
+    },
+    {
+      "method": "degree_discount",
+      "selected_seeds": [
+        48,
+        56,
+        35
+      ],
+      "spread_mean": 21.6,
+      "spread_std": 3.620313061969457,
+      "selection_time_seconds": 0.00018625007942318916,
+      "evaluation_time_seconds": 0.002991124987602234
+    }
+  ],
+  "dataset": {
+    "split_sizes": {
+      "train": 38,
+      "validation": 4,
+      "test": 6
+    },
+    "seed_set_sizes": [
+      0,
+      1,
+      2
+    ],
+    "min_marginal_gain": 0.2,
+    "max_marginal_gain": 11.8,
+    "all_labels_finite": true,
+    "all_labels_nonnegative": true
+  },
+  "training": {
+    "dataset": "network_science",
+    "model_name": "marginal_gain_predictor",
+    "model_version": "1",
+    "train_samples": 38,
+    "validation_samples": 4,
+    "test_samples": 6,
+    "epochs": 2,
+    "epoch_losses": [
+      12.914065074920654,
+      12.584049701690674
+    ],
+    "train_time_seconds": 0.04065829096361995
+  },
+  "artifacts": {
+    "model_path": "outputs/first_smoke/network_science/checkpoints/marginal_gain_network_science.pth",
+    "embedding_path": "outputs/first_smoke/network_science/checkpoints/marginal_node2vec_network_science.pth",
+    "dataset_path": "outputs/first_smoke/network_science/training/marginal_dataset.json"
+  },
+  "predictor": {
+    "dataset": "network_science",
+    "evaluated_samples": 6,
+    "mae": 1.4396799708406132,
+    "rmse": 1.915514023537537,
+    "spearman": -0.3768511731740915,
+    "kendall": -0.26666666666666666,
+    "pairwise_accuracy": 0.35714285714285715,
+    "top_1_recall": 0.0,
+    "top_5_recall": 0.8,
+    "top_10_recall": 1.0
+  },
+  "sequential": {
+    "selected_seeds": [
+      8,
+      2,
+      20
+    ],
+    "steps": [
+      {
+        "step": 1,
+        "seed_set": [],
+        "oracle_node": 54,
+        "selected_node": 8,
+        "oracle_gain": 12.0,
+        "selected_gain": 1.8333333333333333,
+        "regret": 10.166666666666666,
+        "ratio": 0.15277777777777776
+      },
+      {
+        "step": 2,
+        "seed_set": [
+          8
+        ],
+        "oracle_node": 54,
+        "selected_node": 2,
+        "oracle_gain": 12.133333333333333,
+        "selected_gain": 0.9333333333333333,
+        "regret": 11.2,
+        "ratio": 0.07692307692307693
+      },
+      {
+        "step": 3,
+        "seed_set": [
+          8,
+          2
+        ],
+        "oracle_node": 54,
+        "selected_node": 20,
+        "oracle_gain": 11.7,
+        "selected_gain": 1.5666666666666667,
+        "regret": 10.133333333333333,
+        "ratio": 0.1339031339031339
+      }
+    ],
+    "mean_step_regret": 10.5,
+    "cumulative_regret": 31.5,
+    "final_spread": 4.033333333333333
+  },
+  "oracle": {
+    "dataset": "network_science",
+    "budget": 3,
+    "step_limit": 3,
+    "candidate_pool_size": 8,
+    "max_nodes": 30,
+    "selected_seeds": [
+      8,
+      2,
+      20
+    ],
+    "final_spread": 4.033333333333333,
+    "steps": [
+      {
+        "step": 1,
+        "seed_set": [],
+        "current_seed_set": [],
+        "global_oracle_node": 48,
+        "global_oracle_gain": 11.6,
+        "global_oracle_best_node": 48,
+        "global_oracle_best_gain": 11.6,
+        "candidate_oracle_node": 48,
+        "candidate_oracle_gain": 11.6,
+        "candidate_best_node": 48,
+        "candidate_best_gain": 11.6,
+        "model_selected_node": 8,
+        "model_selected_gain": 1.7,
+        "selected_node": 8,
+        "selected_gain": 1.7,
+        "candidate_loss": 0.0,
+        "ranking_loss": 9.9,
+        "total_loss": 9.9,
+        "total_selection_loss": 9.9,
+        "candidate_recall_global_best": true,
+        "candidate_recall_at_k": 1.0,
+        "candidate_pool_size": 17,
+        "relative_gain": 0.14655172413793102,
+        "selected_node_oracle_rank": 21,
+        "degree_candidate_recall_at_k": 1.0,
+        "degree_discount_candidate_recall_at_k": 1.0,
+        "model_candidate_recall_at_k": 0.0,
+        "gnn_selected_node": 8,
+        "gnn_selected_gain": 1.7,
+        "degree_selected_node": 48,
+        "degree_discount_selected_node": 48,
+        "candidate_nodes": [
+          48,
+          56,
+          43,
+          35,
+          38,
+          45,
+          47,
+          53,
+          23,
+          41,
+          8,
+          20,
+          2,
+          5,
+          15,
+          29,
+          39
+        ],
+        "candidate_gains": [
+          {
+            "node": 48,
+            "gain": 11.6,
+            "global_oracle_rank": 1
+          },
+          {
+            "node": 56,
+            "gain": 7.6,
+            "global_oracle_rank": 2
+          },
+          {
+            "node": 47,
+            "gain": 6.8,
+            "global_oracle_rank": 3
+          },
+          {
+            "node": 38,
+            "gain": 4.4,
+            "global_oracle_rank": 6
+          },
+          {
+            "node": 23,
+            "gain": 3.9,
+            "global_oracle_rank": 7
+          },
+          {
+            "node": 35,
+            "gain": 3.9,
+            "global_oracle_rank": 8
+          },
+          {
+            "node": 43,
+            "gain": 3.7,
+            "global_oracle_rank": 9
+          },
+          {
+            "node": 45,
+            "gain": 3.7,
+            "global_oracle_rank": 10
+          },
+          {
+            "node": 41,
+            "gain": 3.2,
+            "global_oracle_rank": 11
+          },
+          {
+            "node": 29,
+            "gain": 2.9,
+            "global_oracle_rank": 14
+          },
+          {
+            "node": 53,
+            "gain": 2.8,
+            "global_oracle_rank": 15
+          },
+          {
+            "node": 8,
+            "gain": 1.7,
+            "global_oracle_rank": 21
+          },
+          {
+            "node": 39,
+            "gain": 1.7,
+            "global_oracle_rank": 24
+          },
+          {
+            "node": 2,
+            "gain": 1.4,
+            "global_oracle_rank": 26
+          },
+          {
+            "node": 5,
+            "gain": 1.4,
+            "global_oracle_rank": 27
+          },
+          {
+            "node": 20,
+            "gain": 1.3,
+            "global_oracle_rank": 28
+          },
+          {
+            "node": 15,
+            "gain": 1.1,
+            "global_oracle_rank": 30
+          }
+        ],
+        "step_runtime": 0.08437425002921373
+      },
+      {
+        "step": 2,
+        "seed_set": [
+          8
+        ],
+        "current_seed_set": [
+          8
+        ],
+        "global_oracle_node": 48,
+        "global_oracle_gain": 11.8,
+        "global_oracle_best_node": 48,
+        "global_oracle_best_gain": 11.8,
+        "candidate_oracle_node": 48,
+        "candidate_oracle_gain": 11.8,
+        "candidate_best_node": 48,
+        "candidate_best_gain": 11.8,
+        "model_selected_node": 2,
+        "model_selected_gain": 1.2,
+        "selected_node": 2,
+        "selected_gain": 1.2,
+        "candidate_loss": 0.0,
+        "ranking_loss": 10.600000000000001,
+        "total_loss": 10.600000000000001,
+        "total_selection_loss": 10.600000000000001,
+        "candidate_recall_global_best": true,
+        "candidate_recall_at_k": 1.0,
+        "candidate_pool_size": 16,
+        "relative_gain": 0.10169491525423728,
+        "selected_node_oracle_rank": 28,
+        "degree_candidate_recall_at_k": 1.0,
+        "degree_discount_candidate_recall_at_k": 1.0,
+        "model_candidate_recall_at_k": 0.0,
+        "gnn_selected_node": 2,
+        "gnn_selected_gain": 1.2,
+        "degree_selected_node": 48,
+        "degree_discount_selected_node": 48,
+        "candidate_nodes": [
+          48,
+          56,
+          43,
+          35,
+          38,
+          45,
+          47,
+          53,
+          23,
+          41,
+          2,
+          20,
+          29,
+          36,
+          5,
+          12
+        ],
+        "candidate_gains": [
+          {
+            "node": 48,
+            "gain": 11.8,
+            "global_oracle_rank": 1
+          },
+          {
+            "node": 47,
+            "gain": 7.1,
+            "global_oracle_rank": 2
+          },
+          {
+            "node": 56,
+            "gain": 6.7,
+            "global_oracle_rank": 3
+          },
+          {
+            "node": 38,
+            "gain": 4.2,
+            "global_oracle_rank": 6
+          },
+          {
+            "node": 35,
+            "gain": 3.9,
+            "global_oracle_rank": 7
+          },
+          {
+            "node": 23,
+            "gain": 3.8,
+            "global_oracle_rank": 8
+          },
+          {
+            "node": 45,
+            "gain": 3.8,
+            "global_oracle_rank": 9
+          },
+          {
+            "node": 43,
+            "gain": 3.5,
+            "global_oracle_rank": 10
+          },
+          {
+            "node": 29,
+            "gain": 2.9,
+            "global_oracle_rank": 13
+          },
+          {
+            "node": 41,
+            "gain": 2.9,
+            "global_oracle_rank": 14
+          },
+          {
+            "node": 53,
+            "gain": 2.2,
+            "global_oracle_rank": 18
+          },
+          {
+            "node": 36,
+            "gain": 1.7,
+            "global_oracle_rank": 22
+          },
+          {
+            "node": 12,
+            "gain": 1.4,
+            "global_oracle_rank": 23
+          },
+          {
+            "node": 20,
+            "gain": 1.4,
+            "global_oracle_rank": 24
+          },
+          {
+            "node": 5,
+            "gain": 1.3,
+            "global_oracle_rank": 25
+          },
+          {
+            "node": 2,
+            "gain": 1.2,
+            "global_oracle_rank": 28
+          }
+        ],
+        "step_runtime": 0.07609791692811996
+      },
+      {
+        "step": 3,
+        "seed_set": [
+          8,
+          2
+        ],
+        "current_seed_set": [
+          8,
+          2
+        ],
+        "global_oracle_node": 48,
+        "global_oracle_gain": 10.6,
+        "global_oracle_best_node": 48,
+        "global_oracle_best_gain": 10.6,
+        "candidate_oracle_node": 48,
+        "candidate_oracle_gain": 10.6,
+        "candidate_best_node": 48,
+        "candidate_best_gain": 10.6,
+        "model_selected_node": 20,
+        "model_selected_gain": 1.3,
+        "selected_node": 20,
+        "selected_gain": 1.3,
+        "candidate_loss": 0.0,
+        "ranking_loss": 9.299999999999999,
+        "total_loss": 9.299999999999999,
+        "total_selection_loss": 9.299999999999999,
+        "candidate_recall_global_best": true,
+        "candidate_recall_at_k": 1.0,
+        "candidate_pool_size": 17,
+        "relative_gain": 0.12264150943396228,
+        "selected_node_oracle_rank": 25,
+        "degree_candidate_recall_at_k": 1.0,
+        "degree_discount_candidate_recall_at_k": 1.0,
+        "model_candidate_recall_at_k": 0.0,
+        "gnn_selected_node": 20,
+        "gnn_selected_gain": 1.3,
+        "degree_selected_node": 48,
+        "degree_discount_selected_node": 48,
+        "candidate_nodes": [
+          48,
+          56,
+          43,
+          35,
+          38,
+          45,
+          47,
+          53,
+          23,
+          41,
+          20,
+          29,
+          5,
+          12,
+          36,
+          15,
+          24
+        ],
+        "candidate_gains": [
+          {
+            "node": 48,
+            "gain": 10.6,
+            "global_oracle_rank": 1
+          },
+          {
+            "node": 56,
+            "gain": 6.7,
+            "global_oracle_rank": 2
+          },
+          {
+            "node": 47,
+            "gain": 5.8,
+            "global_oracle_rank": 3
+          },
+          {
+            "node": 45,
+            "gain": 4.7,
+            "global_oracle_rank": 5
+          },
+          {
+            "node": 38,
+            "gain": 4.1,
+            "global_oracle_rank": 7
+          },
+          {
+            "node": 23,
+            "gain": 3.8,
+            "global_oracle_rank": 8
+          },
+          {
+            "node": 35,
+            "gain": 3.8,
+            "global_oracle_rank": 9
+          },
+          {
+            "node": 29,
+            "gain": 3.0,
+            "global_oracle_rank": 12
+          },
+          {
+            "node": 41,
+            "gain": 3.0,
+            "global_oracle_rank": 14
+          },
+          {
+            "node": 43,
+            "gain": 2.9,
+            "global_oracle_rank": 15
+          },
+          {
+            "node": 53,
+            "gain": 2.4,
+            "global_oracle_rank": 17
+          },
+          {
+            "node": 24,
+            "gain": 2.3,
+            "global_oracle_rank": 18
+          },
+          {
+            "node": 36,
+            "gain": 1.7,
+            "global_oracle_rank": 23
+          },
+          {
+            "node": 12,
+            "gain": 1.3,
+            "global_oracle_rank": 24
+          },
+          {
+            "node": 20,
+            "gain": 1.3,
+            "global_oracle_rank": 25
+          },
+          {
+            "node": 5,
+            "gain": 1.2,
+            "global_oracle_rank": 26
+          },
+          {
+            "node": 15,
+            "gain": 1.2,
+            "global_oracle_rank": 27
+          }
+        ],
+        "step_runtime": 0.08017412491608411
+      }
+    ]
+  },
+  "validation": {
+    "all_metrics_finite": true,
+    "oracle_loss_decomposition_holds": true,
+    "oracle_steps": 3,
+    "different_seed_sets_change_scores": true
+  },
+  "elapsed_seconds": 2.6802413330879062
+}

@@ -17,6 +17,13 @@ env/
 
 outputs/*
 !outputs/.gitkeep
+# Keep reproducible experiment summaries, but never commit model/checkpoint
+# binaries or training intermediates.
+!outputs/first_smoke/
+!outputs/first_smoke/network_science/
+!outputs/first_smoke/network_science/first_round_results.json
+outputs/first_smoke/network_science/checkpoints/
+outputs/first_smoke/network_science/training/
 
 checkpoints/*
 !checkpoints/.gitkeep
