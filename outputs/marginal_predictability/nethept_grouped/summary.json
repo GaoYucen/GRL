@@ -1,0 +1,104 @@
+{
+  "date": "2026-09-02",
+  "dataset": "NetHEPT",
+  "source_grl_commit": "a554560992018fa556eca7d063da0c7ef7a2dcb1",
+  "server_control_run_id": 33531405398,
+  "runner": "81f635a75946",
+  "graph": {
+    "nodes": 15233,
+    "edges": 32235
+  },
+  "protocol": {
+    "train_states": 60,
+    "validation_states": 12,
+    "test_states": 20,
+    "candidates_per_state": 16,
+    "train_mc": 10,
+    "validation_mc": 20,
+    "test_mc": 40,
+    "model_seeds": [11, 22, 33],
+    "objective": "MSE on conditional marginal gain Delta(v|S)",
+    "ranking_scope": "within the same seed set S using common live-edge worlds",
+    "limitation": "Some deterministic high-degree / degree-discount seed prefixes can repeat across train/validation/test. Treat these numbers as a strong positive signal, not final generalization evidence."
+  },
+  "aggregate": {
+    "mae": {
+      "mean": 2.2892414865394435,
+      "std": 0.08373984492503046
+    },
+    "rmse": {
+      "mean": 3.8748155349157116,
+      "std": 0.02598408873977455
+    },
+    "pearson": {
+      "mean": 0.9804944018658216,
+      "std": 0.00003176149951341371
+    },
+    "global_spearman": {
+      "mean": 0.9382858420224683,
+      "std": 0.0029231828602056032
+    },
+    "mean_conditional_spearman": {
+      "mean": 0.9314009542509615,
+      "std": 0.0016764467561500391
+    },
+    "mean_pairwise_accuracy": {
+      "mean": 0.9163192624694303,
+      "std": 0.0024752618824701767
+    },
+    "top1_accuracy": {
+      "mean": 0.9,
+      "std": 0.0
+    },
+    "top3_recall": {
+      "mean": 0.9111111111111111,
+      "std": 0.007856742013183834
+    },
+    "mean_selected_gain_ratio": {
+      "mean": 0.994289864559797,
+      "std": 1.1102230246251565e-16
+    },
+    "mean_regret": {
+      "mean": 0.18249998092651368,
+      "std": 0.0
+    },
+    "degree_mean_gain_ratio": {
+      "mean": 0.4011212832045635,
+      "std": 5.551115123125783e-17
+    }
+  },
+  "per_model_seed": {
+    "11": {
+      "mae": 2.3712418779730795,
+      "rmse": 3.9109537643692245,
+      "mean_conditional_spearman": 0.9305643783708708,
+      "mean_pairwise_accuracy": 0.9157404137116314,
+      "top1_accuracy": 0.9,
+      "top3_recall": 0.9166666666666667,
+      "mean_selected_gain_ratio": 0.9942898645597971
+    },
+    "22": {
+      "mae": 2.3222378738224507,
+      "rmse": 3.8509774878415737,
+      "mean_conditional_spearman": 0.9298980924865466,
+      "mean_pairwise_accuracy": 0.91361885697576,
+      "top1_accuracy": 0.9,
+      "top3_recall": 0.9,
+      "mean_selected_gain_ratio": 0.9942898645597971
+    },
+    "33": {
+      "mae": 2.1742447078227998,
+      "rmse": 3.862515352536337,
+      "mean_conditional_spearman": 0.9337403918954668,
+      "mean_pairwise_accuracy": 0.9195985167208995,
+      "top1_accuracy": 0.9,
+      "top3_recall": 0.9166666666666667,
+      "mean_selected_gain_ratio": 0.9942898645597971
+    }
+  },
+  "interpretation": {
+    "status": "positive_signal_pending_strict_validation",
+    "main_finding": "Direct marginal-gain prediction is highly correlated with true conditional rankings in this first grouped NetHEPT experiment.",
+    "next_required_test": "Run evaluate_marginal_strict.py with disjoint seed states and correct/zero/shuffled seed-mask ablations before treating the predictor as validated."
+  }
+}
