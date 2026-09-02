@@ -23,10 +23,21 @@ def main() -> None:
     parser.add_argument("--split", choices=("train", "validation", "test"), default="test")
     parser.add_argument("--model-path", default=None)
     parser.add_argument("--embedding-path", default=None)
+    parser.add_argument("--ranking-states", type=int, default=None)
+    parser.add_argument("--candidates-per-state", type=int, default=None)
+    parser.add_argument("--mc-runs", type=int, default=None)
     parser.add_argument("--output", default=None)
     args = parser.parse_args()
 
     config = load_yaml_config(args.config)
+    gnn_config = config.setdefault("gnn", {})
+    if args.ranking_states is not None:
+        gnn_config["ranking_states"] = args.ranking_states
+    if args.candidates_per_state is not None:
+        gnn_config["candidates_per_state"] = args.candidates_per_state
+    if args.mc_runs is not None:
+        gnn_config["mc_runs_train"] = args.mc_runs
+
     set_random_seed(int(config["experiment"]["random_seed"]))
     graph_data = load_graph_from_config(config)
     device = torch.device(config.get("gnn", {}).get("device", "cpu"))
@@ -68,11 +79,12 @@ def main() -> None:
                 )
             )
 
+    candidates_per_group = int(gnn_config.get("candidates_per_state", 16))
     metrics = {
         "dataset": graph_data.name,
         "split": args.split,
         "groups": len(ranking_groups),
-        "candidates_per_group": int(config.get("gnn", {}).get("candidates_per_state", 16)),
+        "candidates_per_group": candidates_per_group,
         "model_path": str(model_path),
         "metrics": evaluate_conditional_rankings(ranking_groups),
     }
