@@ -52,6 +52,7 @@ def make_unique_states(graph_data, count, candidate_count, seed, forbidden=None)
     top_pool = degree_rank[: min(1500, len(degree_rank))]
     forbidden = set() if forbidden is None else set(forbidden)
     seen = set(forbidden)
+    generated_keys = set()
     rows = []
     attempts = 0
 
@@ -76,6 +77,7 @@ def make_unique_states(graph_data, count, candidate_count, seed, forbidden=None)
         if key in seen:
             continue
         seen.add(key)
+        generated_keys.add(key)
 
         selected = set(seeds)
         candidates = []
@@ -100,7 +102,7 @@ def make_unique_states(graph_data, count, candidate_count, seed, forbidden=None)
 
     if len(rows) != count:
         raise RuntimeError(f"Could only generate {len(rows)} unique states")
-    return rows, seen
+    return rows, generated_keys
 
 
 def predict_rows_mask_mode(model, embeddings, norm_degrees, rows, num_nodes, device, mode):
