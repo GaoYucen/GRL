@@ -21,6 +21,8 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", required=True)
     parser.add_argument("--split", choices=("train", "validation", "test"), default="test")
+    parser.add_argument("--model-path", default=None)
+    parser.add_argument("--embedding-path", default=None)
     parser.add_argument("--output", default=None)
     args = parser.parse_args()
 
@@ -29,8 +31,13 @@ def main() -> None:
     graph_data = load_graph_from_config(config)
     device = torch.device(config.get("gnn", {}).get("device", "cpu"))
     model_dir = Path(config.get("gnn", {}).get("model_dir", "param"))
-    embedding_path = model_dir / f"marginal_node2vec_{graph_data.name}.pth"
-    model_path = model_dir / f"marginal_gain_{graph_data.name}.pth"
+    embedding_path = Path(args.embedding_path) if args.embedding_path else model_dir / f"marginal_node2vec_{graph_data.name}.pth"
+    model_path = Path(args.model_path) if args.model_path else model_dir / f"marginal_gain_{graph_data.name}.pth"
+    if not model_path.exists():
+        raise FileNotFoundError(
+            f"Marginal predictor checkpoint not found: {model_path}. "
+            "Train it first or pass --model-path."
+        )
 
     embeddings = load_or_create_node2vec_embeddings(graph_data.graph, embedding_path).to(device)
     norm_degrees, _ = build_node_features(graph_data.graph, device=device)
@@ -66,6 +73,7 @@ def main() -> None:
         "split": args.split,
         "groups": len(ranking_groups),
         "candidates_per_group": int(config.get("gnn", {}).get("candidates_per_state", 16)),
+        "model_path": str(model_path),
         "metrics": evaluate_conditional_rankings(ranking_groups),
     }
     if args.output:
