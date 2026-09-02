@@ -31,6 +31,14 @@ def test_seed_state_groups_are_not_merged():
     assert metrics["top1_accuracy"] == pytest.approx(1.0)
 
 
+def test_recall_uses_the_same_k_for_prediction_and_oracle():
+    group = CandidateRankingGroup((), (0, 1, 2), (0.8, 0.7, 0.1), (0.1, 0.9, 0.8))
+    metrics = evaluate_conditional_rankings([group], top_ks=(1, 2))
+    assert metrics["top1_accuracy"] == pytest.approx(0.0)
+    assert metrics["recall_at_1"] == pytest.approx(0.0)
+    assert metrics["recall_at_2"] == pytest.approx(0.5)
+
+
 def test_invalid_group_shapes_are_rejected():
     with pytest.raises(ValueError):
         CandidateRankingGroup((), (0, 1), (1.0,), (1.0, 0.0))
