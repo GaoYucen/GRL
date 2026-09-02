@@ -34,12 +34,15 @@ def evaluate_conditional_rankings(
     groups = list(groups)
     if not groups:
         raise ValueError("at least one ranking group is required")
+    top_ks = tuple(int(k) for k in top_ks if int(k) > 0)
+    if not top_ks:
+        raise ValueError("top_ks must contain at least one positive value")
 
     spearmans: list[float] = []
     kendalls: list[float] = []
     top1_hits = 0
     regrets: list[float] = []
-    recall_sums = {int(k): 0.0 for k in top_ks}
+    recall_sums = {k: 0.0 for k in top_ks}
 
     for group in groups:
         pred = list(group.predictions)
@@ -51,11 +54,11 @@ def evaluate_conditional_rankings(
         regrets.append(float(best - target[pred_order]))
         spearmans.append(spearman_correlation(pred, target))
         kendalls.append(kendall_tau(pred, target))
-        oracle_top = set(_top_indices(target, max(top_ks)))
         for k in top_ks:
-            selected = set(_top_indices(pred, int(k)))
-            denom = min(int(k), len(target))
-            recall_sums[int(k)] += len(selected & oracle_top) / denom
+            selected = set(_top_indices(pred, k))
+            oracle_top = set(_top_indices(target, k))
+            denom = min(k, len(target))
+            recall_sums[k] += len(selected & oracle_top) / denom
 
     n = len(groups)
     result: dict[str, float | int] = {
