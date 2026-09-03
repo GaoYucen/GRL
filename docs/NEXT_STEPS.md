@@ -1,27 +1,38 @@
 # GRL Next Steps
 
-Last updated: 2026-09-02
+Last updated: 2026-09-03
 
-## P0 — Consolidate the current pre-experiment evidence
-- [ ] Identify the latest valid P1/P2/ensemble result artifacts under `/workspace/GRL`.
-- [ ] Record the exact configs, commands, and comparable metrics for those runs.
-- [ ] Update `EXPERIMENT_LOG.md` with only verified results and remove ambiguity between smoke tests and reference experiments.
+## Current ICLR 2027 route
+1. State-aware conditional marginal-gain predictor Δ(v|S).
+2. Learning-augmented marginal oracle that scores broadly with the learned model and selectively invokes a stronger exact/MC/RIS oracle.
+3. Sequential influence maximization driven by that oracle; RL is not a required main component at this stage.
+4. Adaptive trust / certification / fallback to obtain a quality-versus-oracle-cost tradeoff and later consistency/robustness guarantees.
 
-## P0 — Validate the learned marginal-gain oracle rigorously
-- [ ] Evaluate strict unseen-state generalization.
-- [ ] Compare correct state/seed-mask conditioning with zeroed or shuffled state information.
-- [ ] Report ranking metrics within each state in addition to MAE/MSE-type regression metrics.
-- [ ] Measure downstream influence-maximization quality when using predictions for candidate selection.
+## P0 — End-to-end prototype: completed baseline
+- [x] Strict unseen-state validation.
+- [x] Correct-mask vs zero/shuffled-mask diagnostics.
+- [x] Within-state ranking metrics and controlled overlap/state-conditioning tests.
+- [x] Modular learned oracle + batched MC oracle + sequential greedy framework.
+- [x] First NetHEPT Full-MC / learned-only / selective / degree baselines.
+- [x] First quality-versus-exact-oracle-budget curve (Top-8/16/32).
 
-## P0 — Complete the certified / trust-aware decision mechanism
-- [ ] Define the uncertainty/trust signal used to decide when predictions are accepted.
-- [ ] Define fallback behavior when confidence is insufficient.
-- [ ] Measure quality-versus-oracle-query/computation tradeoffs.
+## P0 — Next engineering/research milestone
+- [ ] Measure per-step **shortlist recall**: whether the Full-MC best candidate is inside learned Top-K, for K={8,16,32,64}; separate predictor recall failure from MC noise.
+- [ ] Replace fixed Top-M refinement with an **adaptive trust/certification rule** based initially on prediction gaps / shortlist stability, then uncertainty if needed.
+- [ ] Improve training/data only where it directly increases sequential shortlist recall; prioritize hard evolving seed states and candidate-state interactions over small global MAE gains.
+- [ ] Obtain a reference point near Full-MC quality with materially fewer exact candidate evaluations, then repeat across random seeds.
 
-## P1 — Paper-oriented evaluation
-- [ ] Evaluate robustness across graph settings / datasets available in the project.
-- [ ] Run ablations separating predictor quality, uncertainty/trust mechanism, and fallback/certification components.
-- [ ] Maintain a reproducible table mapping paper claims to scripts/configs/results.
+## P1 — Scale toward paper-quality evaluation
+- [ ] Expand beyond the fixed 128-candidate prototype to larger/all-node candidate sets using scalable candidate generation or RIS-style oracle support.
+- [ ] Evaluate additional IM datasets and graph settings.
+- [ ] Compare against strong classical IM baselines and relevant learning-based IM methods.
+- [ ] Report influence spread, quality ratio, exact oracle calls / simulations, runtime, and memory.
+- [ ] Add ablations for state-aware supervision, trust/certification, and fallback.
+
+## P1 — Theory / paper framing after empirical mechanism stabilizes
+- [ ] Formalize the learned-oracle interface and prediction-error/trust assumptions.
+- [ ] Derive consistency when predictions are reliable and robustness/fallback behavior when they fail.
+- [ ] Keep RL as an optional later extension only if it adds measurable value beyond sequential greedy with the learned oracle.
 
 ## Session-resume instruction
-A new Codex session should start by reading `AGENTS.md`, `docs/RESEARCH_STATE.md`, and this file, then inspect the latest result artifacts before deciding which unchecked P0 item to execute.
+A new session should start by reading `AGENTS.md`, `docs/RESEARCH_STATE.md`, `docs/EXPERIMENT_LOG.md`, and this file. The immediate next target is shortlist recall + adaptive certification, not further micro-tuning of regression metrics.

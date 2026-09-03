@@ -1,0 +1,45 @@
+{
+  "dataset": "NetHEPT",
+  "pool_size": 128,
+  "budget": 10,
+  "oracle_mc": 40,
+  "eval_mc": 1000,
+  "tradeoff": [
+    {
+      "top_m": 8,
+      "full_spread": 444.911,
+      "selective_spread": 412.186,
+      "quality_ratio": 0.9264459633499733,
+      "full_exact_candidate_evaluations": 1235,
+      "selective_exact_candidate_evaluations": 80,
+      "exact_fraction": 0.06477732793522267,
+      "full_mc_candidate_samples": 49400,
+      "selective_mc_candidate_samples": 3200,
+      "learned_evaluations": 1235
+    },
+    {
+      "top_m": 16,
+      "full_spread": 444.911,
+      "selective_spread": 414.101,
+      "quality_ratio": 0.9307501949828167,
+      "full_exact_candidate_evaluations": 1235,
+      "selective_exact_candidate_evaluations": 160,
+      "exact_fraction": 0.12955465587044535,
+      "full_mc_candidate_samples": 49400,
+      "selective_mc_candidate_samples": 6400,
+      "learned_evaluations": 1235
+    },
+    {
+      "top_m": 32,
+      "full_spread": 444.911,
+      "selective_spread": 422.776,
+      "quality_ratio": 0.9502484766616245,
+      "full_exact_candidate_evaluations": 1235,
+      "selective_exact_candidate_evaluations": 320,
+      "exact_fraction": 0.2591093117408907,
+      "full_mc_candidate_samples": 49400,
+      "selective_mc_candidate_samples": 12800,
+      "learned_evaluations": 1235
+    }
+  ]
+}
