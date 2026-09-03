@@ -1,0 +1,131 @@
+{
+  "dataset": "NetHEPT",
+  "scope": "multi-seed robustness/calibration pilot on shared 128-candidate pool",
+  "config": {
+    "pool_size": 128,
+    "budget": 10,
+    "selection_max_mc": 40,
+    "final_eval_mc": 1000,
+    "repeats": 5,
+    "alphas": [0.0, 0.5, 0.75, 1.0],
+    "trust_tau": 0.3,
+    "audit_mc": 20,
+    "audit_top_k": 16,
+    "audit_sentinels": 4,
+    "progressive_budgets": [5, 10, 20, 40],
+    "progressive_bootstrap_mc": 10,
+    "progressive_confidence_z": 0.5,
+    "progressive_residual_beta": 0.5
+  },
+  "full_mc_reference": {
+    "spread_mean": 445.154,
+    "spread_std_across_runs": 3.153838,
+    "mc_candidate_samples": 49400
+  },
+  "aggregate": {
+    "alpha_0": {
+      "predictor_spearman_mean": 1.0,
+      "trust_rho_mean": 0.387218,
+      "fallback_steps_mean": 4.4,
+      "fallback_steps_std": 1.516575,
+      "spread_mean": 445.3616,
+      "spread_std_across_runs": 3.25113,
+      "quality_ratio_mean": 1.000492,
+      "quality_ratio_std": 0.008182,
+      "candidate_evaluations_mean": 690.6,
+      "mc_candidate_samples_mean": 26004.0,
+      "mc_candidate_samples_std": 4135.877,
+      "sample_fraction_vs_full_mean": 0.526397
+    },
+    "alpha_0.5": {
+      "predictor_spearman_mean": 0.624136,
+      "trust_rho_mean": 0.349233,
+      "fallback_steps_mean": 4.0,
+      "fallback_steps_std": 1.581139,
+      "spread_mean": 446.4676,
+      "spread_std_across_runs": 1.738589,
+      "quality_ratio_mean": 1.003,
+      "quality_ratio_std": 0.009327,
+      "candidate_evaluations_mean": 657.8,
+      "mc_candidate_samples_mean": 24542.0,
+      "mc_candidate_samples_std": 5636.046,
+      "sample_fraction_vs_full_mean": 0.496802
+    },
+    "alpha_0.75": {
+      "predictor_spearman_mean": 0.248159,
+      "trust_rho_mean": 0.150526,
+      "fallback_steps_mean": 7.6,
+      "fallback_steps_std": 0.547723,
+      "spread_mean": 445.9792,
+      "spread_std_across_runs": 2.002264,
+      "quality_ratio_mean": 1.001874,
+      "quality_ratio_std": 0.00448,
+      "candidate_evaluations_mean": 1046.6,
+      "mc_candidate_samples_mean": 41171.0,
+      "mc_candidate_samples_std": 2725.629,
+      "sample_fraction_vs_full_mean": 0.833421
+    },
+    "alpha_1": {
+      "predictor_spearman_mean": -0.040232,
+      "trust_rho_mean": -0.014045,
+      "fallback_steps_mean": 9.4,
+      "fallback_steps_std": 0.894427,
+      "spread_mean": 445.0766,
+      "spread_std_across_runs": 3.082846,
+      "quality_ratio_mean": 0.999827,
+      "quality_ratio_std": 0.000455,
+      "candidate_evaluations_mean": 1183.8,
+      "mc_candidate_samples_mean": 47161.0,
+      "mc_candidate_samples_std": 3203.269,
+      "sample_fraction_vs_full_mean": 0.954676
+    }
+  },
+  "per_repeat": [
+    {
+      "repeat": 0,
+      "full_mc_spread": 446.992,
+      "alpha_0": {"fallback_steps": 2, "quality_ratio": 0.9960, "mc_samples": 20440},
+      "alpha_0.5": {"fallback_steps": 3, "quality_ratio": 0.9968, "mc_samples": 20470},
+      "alpha_0.75": {"fallback_steps": 7, "quality_ratio": 1.0015, "mc_samples": 39260},
+      "alpha_1": {"fallback_steps": 8, "quality_ratio": 0.9990, "mc_samples": 42490}
+    },
+    {
+      "repeat": 1,
+      "full_mc_spread": 442.051,
+      "alpha_0": {"fallback_steps": 6, "quality_ratio": 0.9962, "mc_samples": 31700},
+      "alpha_0.5": {"fallback_steps": 6, "quality_ratio": 1.0133, "mc_samples": 32840},
+      "alpha_0.75": {"fallback_steps": 8, "quality_ratio": 1.0015, "mc_samples": 43100},
+      "alpha_1": {"fallback_steps": 9, "quality_ratio": 1.0001, "mc_samples": 45115}
+    },
+    {
+      "repeat": 2,
+      "full_mc_spread": 441.469,
+      "alpha_0": {"fallback_steps": 4, "quality_ratio": 1.0127, "mc_samples": 24140},
+      "alpha_0.5": {"fallback_steps": 5, "quality_ratio": 1.0106, "mc_samples": 27260},
+      "alpha_0.75": {"fallback_steps": 7, "quality_ratio": 1.0091, "mc_samples": 37595},
+      "alpha_1": {"fallback_steps": 10, "quality_ratio": 1.0000, "mc_samples": 49400}
+    },
+    {
+      "repeat": 3,
+      "full_mc_spread": 448.318,
+      "alpha_0": {"fallback_steps": 5, "quality_ratio": 0.9926, "mc_samples": 26720},
+      "alpha_0.5": {"fallback_steps": 2, "quality_ratio": 0.9909, "mc_samples": 18820},
+      "alpha_0.75": {"fallback_steps": 8, "quality_ratio": 0.9967, "mc_samples": 44220},
+      "alpha_1": {"fallback_steps": 10, "quality_ratio": 1.0000, "mc_samples": 49400}
+    },
+    {
+      "repeat": 4,
+      "full_mc_spread": 446.940,
+      "alpha_0": {"fallback_steps": 5, "quality_ratio": 1.0049, "mc_samples": 27020},
+      "alpha_0.5": {"fallback_steps": 4, "quality_ratio": 1.0035, "mc_samples": 23320},
+      "alpha_0.75": {"fallback_steps": 8, "quality_ratio": 1.0007, "mc_samples": 41680},
+      "alpha_1": {"fallback_steps": 10, "quality_ratio": 1.0000, "mc_samples": 49400}
+    }
+  ],
+  "interpretation": {
+    "primary": "The trust-aware progressive solver preserves near-Full-MC solution quality while oracle effort increases automatically as predictor quality degrades.",
+    "clean_case": "Clean-predictor cost is substantially below Full-MC on average, but fallback/cost varies materially across audit/MC seeds; false distrust and efficiency variance are the next calibration target.",
+    "random_endpoint": "A fully randomized predictor uses 95.5% of Full-MC samples on average and achieves a 0.9998 mean quality ratio, eliminating the catastrophic 0.8306-quality failure of the ungated progressive method.",
+    "caveat": "Ratios slightly above 1 are finite-MC and trajectory noise and must not be interpreted as outperforming classical Full-MC greedy. Results remain a 128-candidate prototype rather than full-graph/RIS paper-scale evidence."
+  }
+}
