@@ -46,3 +46,11 @@ This file is a concise index of experiments worth remembering. Raw logs, checkpo
 **Adaptive result:** residual-envelope adaptive refinement with `beta=0.5` obtains spread **443.626** versus Full-MC **444.911** (ratio **0.9971**) using **512** exact candidate evaluations versus **1235** (fraction **0.4146**). With per-step MC-world reuse it uses 400 live-edge worlds and takes 32.4s in the current NetworkX prototype.
 
 **Interpretation:** the main predictor metric for the next phase is sequential hard-state Top-K recall, and the main algorithmic direction is adaptive certification/fallback rather than a fixed shortlist. See `docs/results/nethept_adaptive_certification_20260903.json`.
+
+## 2026-09-03 — Two-level adaptive certification with progressive MC
+
+Starting from the validated adaptive shortlist rule, we separated two decisions: (1) how many candidates need exact verification, and (2) how many common-random-number MC worlds are needed inside the current shortlist. The final implementation uses progressive MC budgets 5→10→20→40 and caches candidate/world gains across rounds.
+
+On NetHEPT (128-node candidate pool, budget=10, final spread MC=1000), the recommended configuration is residual_beta=0.5, confidence_z=0.5, bootstrap_mc=10. It selects the same seeds and obtains the same measured spread as the fixed adaptive beta=0.5 baseline: 443.626 (99.71% of Full-MC 444.911). Exact candidate evaluations are 504 versus 1235 for Full-MC; MC candidate-samples are 18,280 versus 49,400 for Full-MC and 20,480 for fixed adaptive. Selection time is 23.59s in this implementation. The per-step verified shortlist sizes are [16,16,16,72,64,112,96,80,16,16], with final MC budgets [40,10,10,20,40,20,5,40,20,40].
+
+Bootstrap ablation 10/20/40 produced identical selected seeds and spread. Bootstrap=10 was best on compute: 18,280 samples and 320 generated live-edge worlds, versus 18,920/360 for bootstrap=20 and 18,920/400 for bootstrap=40.

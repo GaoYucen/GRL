@@ -47,3 +47,11 @@ A new session should start by reading `AGENTS.md`, `docs/RESEARCH_STATE.md`, `do
 - [ ] Add adaptive MC sample allocation so both candidate count and simulations per candidate are refined only when needed.
 - [ ] Run robustness stress tests with degraded/noisy/shuffled predictors and verify automatic fallback.
 - [ ] Extend beyond the fixed 128-candidate prototype to larger/all-node candidate settings and then RIS-style scalable oracles.
+
+## P0 after progressive MC: robustness / consistency stress test
+
+1. Freeze the current recommended configuration (residual_beta=0.5, confidence_z=0.5, bootstrap_mc=10).
+2. Deliberately degrade learned scores with controlled noise / score mixing and a shuffled-ranking endpoint.
+3. For each predictor-quality level measure final spread, exact candidate evaluations, MC candidate-samples, verified candidates per step, and fallback frequency.
+4. Success criterion for the learning-augmented story: as prediction quality worsens, oracle/sample cost should rise automatically while spread degrades much more slowly and eventually approaches the classical-oracle fallback behavior.
+5. After this mechanism-level stress test, move from the fixed 128-node pool toward scalable all-node/RIS evaluation and multiple IM datasets.

@@ -1,0 +1,226 @@
+{
+  "dataset": "NetHEPT",
+  "config": {
+    "pool_size": 128,
+    "budget": 10,
+    "eval_mc": 1000,
+    "z_values": [
+      0.5
+    ],
+    "residual_beta": 0.5,
+    "bootstrap_values": [
+      10,
+      20,
+      40
+    ]
+  },
+  "reference": {
+    "full_mc_spread": 444.911,
+    "full_mc_candidate_evaluations": 1235,
+    "full_mc_candidate_samples": 49400,
+    "fixed_adaptive_beta_0.5_candidate_evaluations": 512,
+    "fixed_adaptive_beta_0.5_mc_candidate_samples": 20480,
+    "fixed_adaptive_beta_0.5_spread": 443.626
+  },
+  "methods": {
+    "progressive_boot_10_z_0.5": {
+      "bootstrap_mc": 10,
+      "confidence_z": 0.5,
+      "residual_beta": 0.5,
+      "selected_seeds": [
+        1265,
+        410,
+        310,
+        3519,
+        1807,
+        228,
+        5753,
+        892,
+        2216,
+        985
+      ],
+      "final_spread_mean": 443.626,
+      "final_spread_std": 49.38501922648203,
+      "quality_ratio_vs_full_mc": 0.9971117819069432,
+      "selection_seconds": 23.58582447702065,
+      "oracle_stats": {
+        "candidate_evaluations": 504,
+        "mc_candidate_samples": 18280,
+        "live_edge_samples": 320,
+        "learned_evaluations": 1235
+      },
+      "exact_fraction_vs_full_mc": 0.4080971659919028,
+      "sample_fraction_vs_full_mc": 0.3700404858299595,
+      "sample_fraction_vs_fixed_adaptive": 0.892578125,
+      "verified_per_step": [
+        16,
+        16,
+        16,
+        72,
+        64,
+        112,
+        96,
+        80,
+        16,
+        16
+      ],
+      "mc_budget_per_step": [
+        40,
+        10,
+        10,
+        20,
+        40,
+        20,
+        5,
+        40,
+        20,
+        40
+      ],
+      "stop_reasons": [
+        "fallback_mc40_certified",
+        "progressive_early",
+        "progressive_early",
+        "progressive_early",
+        "fallback_mc40_certified",
+        "progressive_early",
+        "progressive_early",
+        "fallback_mc40_certified",
+        "progressive_early",
+        "fallback_mc40_certified"
+      ]
+    },
+    "progressive_boot_20_z_0.5": {
+      "bootstrap_mc": 20,
+      "confidence_z": 0.5,
+      "residual_beta": 0.5,
+      "selected_seeds": [
+        1265,
+        410,
+        310,
+        3519,
+        1807,
+        228,
+        5753,
+        892,
+        2216,
+        985
+      ],
+      "final_spread_mean": 443.626,
+      "final_spread_std": 49.38501922648203,
+      "quality_ratio_vs_full_mc": 0.9971117819069432,
+      "selection_seconds": 27.59030109993182,
+      "oracle_stats": {
+        "candidate_evaluations": 512,
+        "mc_candidate_samples": 18920,
+        "live_edge_samples": 360,
+        "learned_evaluations": 1235
+      },
+      "exact_fraction_vs_full_mc": 0.4145748987854251,
+      "sample_fraction_vs_full_mc": 0.38299595141700404,
+      "sample_fraction_vs_fixed_adaptive": 0.923828125,
+      "verified_per_step": [
+        16,
+        16,
+        24,
+        72,
+        64,
+        112,
+        96,
+        80,
+        16,
+        16
+      ],
+      "mc_budget_per_step": [
+        40,
+        10,
+        10,
+        20,
+        40,
+        20,
+        5,
+        40,
+        20,
+        40
+      ],
+      "stop_reasons": [
+        "fallback_mc40_certified",
+        "progressive_early",
+        "progressive_early",
+        "progressive_early",
+        "fallback_mc40_certified",
+        "progressive_early",
+        "progressive_early",
+        "fallback_mc40_certified",
+        "progressive_early",
+        "fallback_mc40_certified"
+      ]
+    },
+    "progressive_boot_40_z_0.5": {
+      "bootstrap_mc": 40,
+      "confidence_z": 0.5,
+      "residual_beta": 0.5,
+      "selected_seeds": [
+        1265,
+        410,
+        310,
+        3519,
+        1807,
+        228,
+        5753,
+        892,
+        2216,
+        985
+      ],
+      "final_spread_mean": 443.626,
+      "final_spread_std": 49.38501922648203,
+      "quality_ratio_vs_full_mc": 0.9971117819069432,
+      "selection_seconds": 38.532658545998856,
+      "oracle_stats": {
+        "candidate_evaluations": 504,
+        "mc_candidate_samples": 18920,
+        "live_edge_samples": 400,
+        "learned_evaluations": 1235
+      },
+      "exact_fraction_vs_full_mc": 0.4080971659919028,
+      "sample_fraction_vs_full_mc": 0.38299595141700404,
+      "sample_fraction_vs_fixed_adaptive": 0.923828125,
+      "verified_per_step": [
+        16,
+        16,
+        16,
+        72,
+        64,
+        112,
+        96,
+        80,
+        16,
+        16
+      ],
+      "mc_budget_per_step": [
+        40,
+        10,
+        10,
+        20,
+        40,
+        20,
+        5,
+        40,
+        20,
+        40
+      ],
+      "stop_reasons": [
+        "fallback_mc40_certified",
+        "progressive_early",
+        "progressive_early",
+        "progressive_early",
+        "fallback_mc40_certified",
+        "progressive_early",
+        "progressive_early",
+        "fallback_mc40_certified",
+        "progressive_early",
+        "fallback_mc40_certified"
+      ]
+    }
+  },
+  "recommended": "progressive_boot_10_z_0.5"
+}

@@ -47,3 +47,9 @@ Several GRL-specific pre-experiment/worktree directories currently live inside `
 - Per-step exact verification is `[16, 16, 16, 80, 64, 112, 96, 80, 16, 16]`, demonstrating the intended easy-state / hard-state adaptive behavior.
 - Reusing common live-edge worlds within each greedy step reduces adaptive live-edge generation from 2560 to 400 and prototype selection time from 139.7s to 32.4s without changing quality.
 - Current certification is empirical/operational; formal uncertainty calibration and a robustness guarantee remain open.
+
+## 2026-09-03 update — progressive two-dimensional oracle adaptation
+
+The current end-to-end method now adapts along two axes. The learned marginal oracle first proposes a ranking; adaptive residual-envelope certification determines how many candidates receive exact verification; progressive common-random-number MC then allocates 5→10→20→40 worlds only as needed. Candidate/world results are cached, so refinement does not repeat completed simulations.
+
+Current recommended NetHEPT prototype: residual_beta=0.5, confidence_z=0.5, bootstrap_mc=10. It reaches spread 443.626 = 99.71% of Full-MC while using 504/1235 exact candidate evaluations and 18,280/49,400 MC candidate-samples. This is the strongest current evidence for the learning-augmented certified-oracle framing. These are still single-protocol prototype results; robustness under deliberately degraded predictions is the next required validation before making a general consistency/robustness claim.

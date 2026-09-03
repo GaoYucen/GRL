@@ -135,12 +135,24 @@ def progressive_adaptive_greedy(
     batch_m=8,
     residual_beta=0.5,
     confidence_z=1.0,
+    bootstrap_mc=40,
 ):
+    """Two-level adaptive certification.
+
+    Candidate expansion follows the same max-MC residual-envelope/stability rule
+    as the validated fixed adaptive method. Progressive MC is only an early-stop
+    layer *within* a candidate shortlist. If early sampling is inconclusive, the
+    method reaches 40 common-random-number worlds and therefore recovers the same
+    shortlist decision logic as fixed adaptive certification.
+    """
     selected = []
     steps = []
     budgets = sorted({int(x) for x in sample_budgets if int(x) > 0})
     if not budgets:
         raise ValueError("sample_budgets must be non-empty")
+    max_mc = budgets[-1]
+    bootstrap_mc = max(1, min(int(bootstrap_mc), max_mc))
+    bootstrap_n = max([x for x in budgets if x <= bootstrap_mc] or [budgets[0]])
 
     for step in range(int(budget)):
         available = [v for v in candidate_pool if v not in set(selected)]
@@ -149,65 +161,105 @@ def progressive_adaptive_greedy(
         learned = learned_oracle.score(selected, available, step=step)
         ranked = sorted(available, key=lambda v: (learned[v], -v), reverse=True)
         target = min(int(initial_m), len(ranked))
-        sample_idx = 0
+        previous_target_winner = None
         rounds = []
         chosen = None
         stop_reason = None
         last_means = None
+        final_n = max_mc
 
         while True:
             verified_nodes = ranked[:target]
-            n = budgets[sample_idx]
-            means, samples = exact_oracle.score_samples(selected, verified_nodes, step, n)
-            last_means = means
-            ordered = sorted(verified_nodes, key=lambda v: (means[v], -v), reverse=True)
-            winner = ordered[0]
-            runner = ordered[1] if len(ordered) > 1 else None
-            internal_ok, pair_mean, pair_se = paired_confidence(winner, runner, samples, confidence_z)
 
-            residuals = [means[v] - learned[v] for v in verified_nodes]
-            residual_max = max(residuals) if residuals else 0.0
-            residual_mean = sum(residuals) / len(residuals) if residuals else 0.0
-            residual_var = sum((x - residual_mean) ** 2 for x in residuals) / len(residuals) if residuals else 0.0
-            residual_std = math.sqrt(max(0.0, residual_var))
-            outsider = ranked[target] if target < len(ranked) else None
-            outsider_upper = None if outsider is None else float(
-                learned[outsider] + residual_max + float(residual_beta) * residual_std
-            )
-            outsider_ok = outsider is None or float(means[winner]) >= float(outsider_upper)
-            certified = bool(internal_ok and outsider_ok)
-
-            rounds.append({
-                "verified": int(target),
-                "mc_budget": int(n),
-                "winner": int(winner),
-                "runner_up": None if runner is None else int(runner),
-                "winner_mean": float(means[winner]),
-                "runner_mean": None if runner is None else float(means[runner]),
-                "paired_diff_mean": float(pair_mean),
-                "paired_diff_se": float(pair_se),
-                "internal_confident": bool(internal_ok),
-                "best_unverified": None if outsider is None else int(outsider),
-                "best_unverified_upper": outsider_upper,
-                "outsider_certified": bool(outsider_ok),
-                "residual_max": float(residual_max),
-                "residual_std": float(residual_std),
-                "certified": bool(certified),
-            })
-
-            if certified:
-                chosen = winner
-                stop_reason = "progressive_certified"
-                break
-            if sample_idx + 1 < len(budgets):
-                sample_idx += 1
-                continue
-            if target < len(ranked):
+            # Bootstrap the first shortlist at max MC so the target-to-target
+            # stability trajectory is identical to the fixed adaptive baseline.
+            if previous_target_winner is None and target < len(ranked):
+                means, samples = exact_oracle.score_samples(selected, verified_nodes, step, bootstrap_n)
+                ordered = sorted(verified_nodes, key=lambda v: (means[v], -v), reverse=True)
+                winner = ordered[0]
+                previous_target_winner = winner
+                rounds.append({
+                    "verified": int(target),
+                    "mc_budget": int(bootstrap_n),
+                    "winner": int(winner),
+                    "stage": "bootstrap",
+                    "certified": False,
+                })
                 target = min(len(ranked), target + int(batch_m))
                 continue
-            chosen = winner
-            stop_reason = "all_candidates"
-            break
+
+            expanded = False
+            winner_at_max = None
+            means_at_max = None
+            for n in budgets:
+                means, samples = exact_oracle.score_samples(selected, verified_nodes, step, n)
+                last_means = means
+                ordered = sorted(verified_nodes, key=lambda v: (means[v], -v), reverse=True)
+                winner = ordered[0]
+                runner = ordered[1] if len(ordered) > 1 else None
+                internal_ok, pair_mean, pair_se = paired_confidence(winner, runner, samples, confidence_z)
+
+                residuals = [means[v] - learned[v] for v in verified_nodes]
+                residual_max = max(residuals) if residuals else 0.0
+                residual_mean = sum(residuals) / len(residuals) if residuals else 0.0
+                residual_var = sum((x - residual_mean) ** 2 for x in residuals) / len(residuals) if residuals else 0.0
+                residual_std = math.sqrt(max(0.0, residual_var))
+                outsider = ranked[target] if target < len(ranked) else None
+                outsider_upper = None if outsider is None else float(
+                    learned[outsider] + residual_max + float(residual_beta) * residual_std
+                )
+                stable = previous_target_winner is None or winner == previous_target_winner
+                outsider_ok = outsider is None or float(means[winner]) >= float(outsider_upper)
+                early_ok = bool(stable and outsider_ok and internal_ok)
+                max_mc_ok = bool(stable and outsider_ok and n == max_mc)
+                certified = bool(early_ok or max_mc_ok)
+
+                rounds.append({
+                    "verified": int(target),
+                    "mc_budget": int(n),
+                    "winner": int(winner),
+                    "runner_up": None if runner is None else int(runner),
+                    "winner_mean": float(means[winner]),
+                    "runner_mean": None if runner is None else float(means[runner]),
+                    "paired_diff_mean": float(pair_mean),
+                    "paired_diff_se": float(pair_se),
+                    "internal_confident": bool(internal_ok),
+                    "stable_vs_previous_shortlist": bool(stable),
+                    "best_unverified": None if outsider is None else int(outsider),
+                    "best_unverified_upper": outsider_upper,
+                    "outsider_certified": bool(outsider_ok),
+                    "residual_max": float(residual_max),
+                    "residual_std": float(residual_std),
+                    "certified": bool(certified),
+                })
+
+                if certified:
+                    chosen = winner
+                    final_n = int(n)
+                    stop_reason = "progressive_early" if n < max_mc else "fallback_mc40_certified"
+                    break
+                if n == max_mc:
+                    winner_at_max = winner
+                    means_at_max = means
+
+            if chosen is not None:
+                break
+
+            if target >= len(ranked):
+                chosen = winner_at_max if winner_at_max is not None else ordered[0]
+                last_means = means_at_max if means_at_max is not None else means
+                final_n = max_mc
+                stop_reason = "all_candidates_mc40"
+                break
+
+            # At max MC the current shortlist was not certifiable. Expand exactly
+            # as in the fixed adaptive method, but let only the newly added nodes
+            # start again from 5 MC samples; old candidate/world values are cached.
+            previous_target_winner = winner_at_max
+            target = min(len(ranked), target + int(batch_m))
+            expanded = True
+            if not expanded:
+                raise RuntimeError("unreachable")
 
         selected.append(int(chosen))
         steps.append({
@@ -216,22 +268,21 @@ def progressive_adaptive_greedy(
             "predicted_score": float(learned[chosen]),
             "oracle_score": float(last_means[chosen]),
             "verified": int(target),
-            "mc_budget": int(budgets[sample_idx]),
+            "mc_budget": int(final_n),
             "stop_reason": stop_reason,
             "rounds": rounds,
             "shortlist": [int(v) for v in ranked[:target]],
         })
     return selected, steps
 
-
-def run_config(graph, candidate_pool, budget, eval_mc, model, embeddings, norm_degrees, device, z, residual_beta):
+def run_config(graph, candidate_pool, budget, eval_mc, model, embeddings, norm_degrees, device, z, residual_beta, bootstrap_mc=40):
     learned = LearnedMarginalOracle(model, embeddings, norm_degrees, device)
     exact = ProgressiveMonteCarloOracle(graph, max_mc=40, random_seed=260903)
     start = time.perf_counter()
     seeds, steps = progressive_adaptive_greedy(
         candidate_pool, budget, learned, exact,
         sample_budgets=(5, 10, 20, 40), initial_m=8, batch_m=8,
-        residual_beta=residual_beta, confidence_z=z,
+        residual_beta=residual_beta, confidence_z=z, bootstrap_mc=bootstrap_mc,
     )
     selection_seconds = time.perf_counter() - start
     spread = estimate_spread(graph, seeds, eval_mc, 960903)
@@ -240,6 +291,7 @@ def run_config(graph, candidate_pool, budget, eval_mc, model, embeddings, norm_d
     return {
         "confidence_z": float(z),
         "residual_beta": float(residual_beta),
+        "bootstrap_mc": int(bootstrap_mc),
         "selected_seeds": seeds,
         "steps": steps,
         "selection_seconds": float(selection_seconds),
@@ -258,6 +310,7 @@ def main():
     p.add_argument("--eval-mc", type=int, default=1000)
     p.add_argument("--z-values", nargs="+", type=float, default=[0.5, 1.0, 1.5])
     p.add_argument("--residual-beta", type=float, default=0.5)
+    p.add_argument("--bootstrap-values", nargs="+", type=int, default=[40])
     args = p.parse_args()
 
     graph_data, graph, device, embeddings, norm_degrees, model, candidate_pool = build_context(args.pool_size)
@@ -270,25 +323,26 @@ def main():
     fixed_adaptive_samples = 512 * 40
 
     methods = {}
-    for z in args.z_values:
-        key = f"progressive_z_{z:g}"
-        item = run_config(
-            graph, candidate_pool, args.budget, args.eval_mc,
-            model, embeddings, norm_degrees, device, z, args.residual_beta,
-        )
-        item["quality_ratio_vs_full_mc"] = float(item["final_spread_mean"] / full_spread)
-        item["exact_fraction_vs_full_mc"] = float(item["oracle_stats"]["candidate_evaluations"] / full_candidate_evals)
-        item["sample_fraction_vs_full_mc"] = float(item["oracle_stats"]["mc_candidate_samples"] / full_mc_candidate_samples)
-        item["sample_fraction_vs_fixed_adaptive"] = float(item["oracle_stats"]["mc_candidate_samples"] / fixed_adaptive_samples)
-        methods[key] = item
-        print(
-            f"{key} spread={item['final_spread_mean']:.3f} ratio={item['quality_ratio_vs_full_mc']:.4f} "
-            f"exact={item['oracle_stats']['candidate_evaluations']} samples={item['oracle_stats']['mc_candidate_samples']} "
-            f"sample_full={item['sample_fraction_vs_full_mc']:.4f} "
-            f"sample_fixed={item['sample_fraction_vs_fixed_adaptive']:.4f} "
-            f"worlds={item['oracle_stats']['live_edge_samples']} time={item['selection_seconds']:.2f} "
-            f"verified={item['verified_per_step']} mc={item['mc_budget_per_step']}", flush=True
-        )
+    for bootstrap_mc in args.bootstrap_values:
+        for z in args.z_values:
+            key = f"progressive_boot_{bootstrap_mc}_z_{z:g}"
+            item = run_config(
+                graph, candidate_pool, args.budget, args.eval_mc,
+                model, embeddings, norm_degrees, device, z, args.residual_beta, bootstrap_mc,
+            )
+            item["quality_ratio_vs_full_mc"] = float(item["final_spread_mean"] / full_spread)
+            item["exact_fraction_vs_full_mc"] = float(item["oracle_stats"]["candidate_evaluations"] / full_candidate_evals)
+            item["sample_fraction_vs_full_mc"] = float(item["oracle_stats"]["mc_candidate_samples"] / full_mc_candidate_samples)
+            item["sample_fraction_vs_fixed_adaptive"] = float(item["oracle_stats"]["mc_candidate_samples"] / fixed_adaptive_samples)
+            methods[key] = item
+            print(
+                f"{key} spread={item['final_spread_mean']:.3f} ratio={item['quality_ratio_vs_full_mc']:.4f} "
+                f"exact={item['oracle_stats']['candidate_evaluations']} samples={item['oracle_stats']['mc_candidate_samples']} "
+                f"sample_full={item['sample_fraction_vs_full_mc']:.4f} "
+                f"sample_fixed={item['sample_fraction_vs_fixed_adaptive']:.4f} "
+                f"worlds={item['oracle_stats']['live_edge_samples']} time={item['selection_seconds']:.2f} "
+                f"verified={item['verified_per_step']} mc={item['mc_budget_per_step']}", flush=True
+            )
 
     report = {
         "dataset": "NetHEPT",
@@ -303,7 +357,7 @@ def main():
         },
         "methods": methods,
     }
-    out_dir = ROOT / "outputs" / "end_to_end" / "progressive_mc"
+    out_dir = ROOT / "outputs" / "end_to_end" / "progressive_mc_v3"
     out_dir.mkdir(parents=True, exist_ok=True)
     out = out_dir / "report.json"
     out.write_text(json.dumps(report, indent=2), encoding="utf-8")
