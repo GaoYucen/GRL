@@ -53,3 +53,11 @@ Several GRL-specific pre-experiment/worktree directories currently live inside `
 The current end-to-end method now adapts along two axes. The learned marginal oracle first proposes a ranking; adaptive residual-envelope certification determines how many candidates receive exact verification; progressive common-random-number MC then allocates 5→10→20→40 worlds only as needed. Candidate/world results are cached, so refinement does not repeat completed simulations.
 
 Current recommended NetHEPT prototype: residual_beta=0.5, confidence_z=0.5, bootstrap_mc=10. It reaches spread 443.626 = 99.71% of Full-MC while using 504/1235 exact candidate evaluations and 18,280/49,400 MC candidate-samples. This is the strongest current evidence for the learning-augmented certified-oracle framing. These are still single-protocol prototype results; robustness under deliberately degraded predictions is the next required validation before making a general consistency/robustness claim.
+
+## 2026-09-04 update — empirical consistency/robustness mechanism
+
+Naive learning-guided certification is not robust to arbitrarily bad predictions. A stress test with randomized learned ranking caused false confidence and an 83.06% quality ratio. The current prototype repairs this with a small online audit over predicted-head and sentinel candidates. When the audit rejects the predictor, the current step falls back to classical Full-MC40.
+
+The first trust-gate sweep shows the desired empirical consistency-to-robustness behavior. At tau=0.3 the clean model preserves near-Full-MC quality while using 63.6% of Full-MC candidate-samples; at alpha=0.75 the gate falls back on 8/10 steps and recovers the Full-MC measured spread using 84.0% of samples; at alpha=1.0 it rejects every step and exactly recovers Full-MC cost/quality. This is empirical robustness, not yet a formal guarantee.
+
+The remaining engineering gap is clean-case efficiency: the robust trust-gated prototype uses 31,440 samples versus 18,280 for the earlier progressive-v3 fast path. The immediate objective is to compose the trust audit with progressive MC inside trusted steps, so good predictions recover the fast path while bad predictions retain classical fallback.

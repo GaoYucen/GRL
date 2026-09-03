@@ -55,3 +55,12 @@ A new session should start by reading `AGENTS.md`, `docs/RESEARCH_STATE.md`, `do
 3. For each predictor-quality level measure final spread, exact candidate evaluations, MC candidate-samples, verified candidates per step, and fallback frequency.
 4. Success criterion for the learning-augmented story: as prediction quality worsens, oracle/sample cost should rise automatically while spread degrades much more slowly and eventually approaches the classical-oracle fallback behavior.
 5. After this mechanism-level stress test, move from the fixed 128-node pool toward scalable all-node/RIS evaluation and multiple IM datasets.
+
+## P0 — Compose trust audit with progressive fast path
+
+1. Keep tau=0.3 as the initial trust threshold; tau=0.4/0.5 were more conservative without improving the clean case.
+2. Replace the current trusted MC40 residual path with the validated progressive-v3 path (bootstrap=10, confidence_z=0.5, residual_beta=0.5, MC budgets 5→10→20→40).
+3. Reuse audit MC samples through the same ProgressiveMonteCarloOracle cache.
+4. Tune only the audit overhead first: audit_mc in {10,20} and sentinel_count in {4,8}, on alpha in {0,0.75,1.0}.
+5. Target clean cost approximately 18k–22k samples with spread >=99.5% of Full-MC, while alpha=1 must still trigger 10/10 fallback and recover Full-MC cost/quality.
+6. After mechanism tuning, rerun the full corruption curve with multiple random seeds and then move to additional IM datasets / scalable candidate sets.

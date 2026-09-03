@@ -1,0 +1,999 @@
+{
+  "dataset": "NetHEPT",
+  "config": {
+    "pool_size": 128,
+    "budget": 10,
+    "eval_mc": 1000,
+    "alphas": [
+      0.0,
+      0.5,
+      0.75,
+      1.0
+    ],
+    "taus": [
+      0.3,
+      0.4,
+      0.5
+    ]
+  },
+  "reference": {
+    "full_mc_spread": 444.911,
+    "full_mc_candidate_evaluations": 1235,
+    "full_mc_candidate_samples": 49400
+  },
+  "recommended_tau": 0.3,
+  "methods": {
+    "tau_0.3_alpha_0": {
+      "alpha": 0.0,
+      "trust_tau": 0.3,
+      "mean_clean_corrupt_spearman": 1.0,
+      "selected_seeds": [
+        1265,
+        410,
+        310,
+        3519,
+        1807,
+        228,
+        5753,
+        892,
+        2216,
+        9070
+      ],
+      "final_spread_mean": 443.591,
+      "final_spread_std": 49.685246492293864,
+      "quality_ratio_vs_full_mc": 0.9970331144880662,
+      "candidate_fraction_vs_full_mc": 0.6493927125506073,
+      "sample_fraction_vs_full_mc": 0.6364372469635627,
+      "oracle_stats": {
+        "candidate_evaluations": 802,
+        "mc_candidate_samples": 31440,
+        "live_edge_samples": 400,
+        "learned_evaluations": 1235
+      },
+      "mode_counts": {
+        "trusted_fast_path": 7,
+        "trust_fallback_full_mc40": 3
+      },
+      "trust_rho_per_step": [
+        0.7973913043478261,
+        0.6539130434782608,
+        0.7034782608695652,
+        0.5626086956521739,
+        0.4147826086956522,
+        0.43130434782608695,
+        0.2747826086956522,
+        0.2817391304347826,
+        0.4182608695652174,
+        0.17391304347826086
+      ],
+      "trusted_per_step": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        true,
+        false
+      ],
+      "sentinel_surprise_per_step": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true
+      ],
+      "verified_per_step": [
+        24,
+        24,
+        24,
+        80,
+        64,
+        112,
+        122,
+        121,
+        80,
+        119
+      ]
+    },
+    "tau_0.3_alpha_0.5": {
+      "alpha": 0.5,
+      "trust_tau": 0.3,
+      "mean_clean_corrupt_spearman": 0.6298824785457591,
+      "selected_seeds": [
+        1265,
+        3519,
+        410,
+        228,
+        1807,
+        310,
+        5753,
+        892,
+        2216,
+        9070
+      ],
+      "final_spread_mean": 446.189,
+      "final_spread_std": 51.0188521921064,
+      "quality_ratio_vs_full_mc": 1.0028724846092814,
+      "candidate_fraction_vs_full_mc": 0.622672064777328,
+      "sample_fraction_vs_full_mc": 0.608502024291498,
+      "oracle_stats": {
+        "candidate_evaluations": 769,
+        "mc_candidate_samples": 30060,
+        "live_edge_samples": 400,
+        "learned_evaluations": 1235
+      },
+      "mode_counts": {
+        "trusted_fast_path": 5,
+        "trust_fallback_full_mc40": 5
+      },
+      "trust_rho_per_step": [
+        0.6443478260869565,
+        0.35304347826086957,
+        0.44608695652173913,
+        0.10782608695652174,
+        0.542608695652174,
+        0.691304347826087,
+        0.21739130434782608,
+        0.2756521739130435,
+        0.34,
+        0.14695652173913043
+      ],
+      "trusted_per_step": [
+        true,
+        false,
+        true,
+        false,
+        true,
+        true,
+        false,
+        false,
+        true,
+        false
+      ],
+      "sentinel_surprise_per_step": [
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false
+      ],
+      "verified_per_step": [
+        24,
+        127,
+        24,
+        125,
+        24,
+        24,
+        122,
+        121,
+        24,
+        119
+      ]
+    },
+    "tau_0.3_alpha_0.75": {
+      "alpha": 0.75,
+      "trust_tau": 0.3,
+      "mean_clean_corrupt_spearman": 0.27203246804349257,
+      "selected_seeds": [
+        1265,
+        3519,
+        228,
+        410,
+        1807,
+        5753,
+        310,
+        892,
+        2216,
+        9070
+      ],
+      "final_spread_mean": 444.911,
+      "final_spread_std": 52.89222134681054,
+      "quality_ratio_vs_full_mc": 1.0,
+      "candidate_fraction_vs_full_mc": 0.8453441295546559,
+      "sample_fraction_vs_full_mc": 0.8396761133603239,
+      "oracle_stats": {
+        "candidate_evaluations": 1044,
+        "mc_candidate_samples": 41480,
+        "live_edge_samples": 400,
+        "learned_evaluations": 1235
+      },
+      "mode_counts": {
+        "trusted_fast_path": 2,
+        "trust_fallback_full_mc40": 8
+      },
+      "trust_rho_per_step": [
+        0.4156521739130435,
+        0.0026086956521739132,
+        -0.08347826086956522,
+        0.3556521739130435,
+        0.29391304347826086,
+        0.2391304347826087,
+        0.1408695652173913,
+        -0.009565217391304347,
+        -0.03217391304347826,
+        0.21565217391304348
+      ],
+      "trusted_per_step": [
+        true,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "sentinel_surprise_per_step": [
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "verified_per_step": [
+        24,
+        127,
+        126,
+        24,
+        124,
+        123,
+        122,
+        121,
+        120,
+        119
+      ]
+    },
+    "tau_0.3_alpha_1": {
+      "alpha": 1.0,
+      "trust_tau": 0.3,
+      "mean_clean_corrupt_spearman": 0.0010153461213250204,
+      "selected_seeds": [
+        1265,
+        3519,
+        228,
+        410,
+        1807,
+        5753,
+        310,
+        892,
+        2216,
+        9070
+      ],
+      "final_spread_mean": 444.911,
+      "final_spread_std": 52.89222134681054,
+      "quality_ratio_vs_full_mc": 1.0,
+      "candidate_fraction_vs_full_mc": 1.0,
+      "sample_fraction_vs_full_mc": 1.0,
+      "oracle_stats": {
+        "candidate_evaluations": 1235,
+        "mc_candidate_samples": 49400,
+        "live_edge_samples": 400,
+        "learned_evaluations": 1235
+      },
+      "mode_counts": {
+        "trust_fallback_full_mc40": 10
+      },
+      "trust_rho_per_step": [
+        0.05478260869565217,
+        -0.16956521739130434,
+        -0.011304347826086957,
+        0.08956521739130435,
+        0.1782608695652174,
+        0.2026086956521739,
+        -0.018260869565217393,
+        -0.12869565217391304,
+        0.11217391304347826,
+        0.14956521739130435
+      ],
+      "trusted_per_step": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "sentinel_surprise_per_step": [
+        true,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        false,
+        true,
+        false
+      ],
+      "verified_per_step": [
+        128,
+        127,
+        126,
+        125,
+        124,
+        123,
+        122,
+        121,
+        120,
+        119
+      ]
+    },
+    "tau_0.4_alpha_0": {
+      "alpha": 0.0,
+      "trust_tau": 0.4,
+      "mean_clean_corrupt_spearman": 1.0,
+      "selected_seeds": [
+        1265,
+        410,
+        310,
+        3519,
+        1807,
+        228,
+        5753,
+        892,
+        2216,
+        9070
+      ],
+      "final_spread_mean": 443.591,
+      "final_spread_std": 49.685246492293864,
+      "quality_ratio_vs_full_mc": 0.9970331144880662,
+      "candidate_fraction_vs_full_mc": 0.6493927125506073,
+      "sample_fraction_vs_full_mc": 0.6364372469635627,
+      "oracle_stats": {
+        "candidate_evaluations": 802,
+        "mc_candidate_samples": 31440,
+        "live_edge_samples": 400,
+        "learned_evaluations": 1235
+      },
+      "mode_counts": {
+        "trusted_fast_path": 7,
+        "trust_fallback_full_mc40": 3
+      },
+      "trust_rho_per_step": [
+        0.7973913043478261,
+        0.6539130434782608,
+        0.7034782608695652,
+        0.5626086956521739,
+        0.4147826086956522,
+        0.43130434782608695,
+        0.2747826086956522,
+        0.2817391304347826,
+        0.4182608695652174,
+        0.17391304347826086
+      ],
+      "trusted_per_step": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        true,
+        false
+      ],
+      "sentinel_surprise_per_step": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true
+      ],
+      "verified_per_step": [
+        24,
+        24,
+        24,
+        80,
+        64,
+        112,
+        122,
+        121,
+        80,
+        119
+      ]
+    },
+    "tau_0.4_alpha_0.5": {
+      "alpha": 0.5,
+      "trust_tau": 0.4,
+      "mean_clean_corrupt_spearman": 0.6298824785457591,
+      "selected_seeds": [
+        1265,
+        3519,
+        410,
+        228,
+        1807,
+        310,
+        5753,
+        892,
+        2216,
+        9070
+      ],
+      "final_spread_mean": 446.189,
+      "final_spread_std": 51.0188521921064,
+      "quality_ratio_vs_full_mc": 1.0028724846092814,
+      "candidate_fraction_vs_full_mc": 0.6947368421052632,
+      "sample_fraction_vs_full_mc": 0.6834008097165992,
+      "oracle_stats": {
+        "candidate_evaluations": 858,
+        "mc_candidate_samples": 33760,
+        "live_edge_samples": 400,
+        "learned_evaluations": 1235
+      },
+      "mode_counts": {
+        "trusted_fast_path": 4,
+        "trust_fallback_full_mc40": 6
+      },
+      "trust_rho_per_step": [
+        0.6443478260869565,
+        0.35304347826086957,
+        0.44608695652173913,
+        0.10782608695652174,
+        0.542608695652174,
+        0.691304347826087,
+        0.21739130434782608,
+        0.2756521739130435,
+        0.34,
+        0.14695652173913043
+      ],
+      "trusted_per_step": [
+        true,
+        false,
+        true,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "sentinel_surprise_per_step": [
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false
+      ],
+      "verified_per_step": [
+        24,
+        127,
+        24,
+        125,
+        24,
+        24,
+        122,
+        121,
+        120,
+        119
+      ]
+    },
+    "tau_0.4_alpha_0.75": {
+      "alpha": 0.75,
+      "trust_tau": 0.4,
+      "mean_clean_corrupt_spearman": 0.27203246804349257,
+      "selected_seeds": [
+        1265,
+        3519,
+        228,
+        410,
+        1807,
+        5753,
+        310,
+        892,
+        2216,
+        9070
+      ],
+      "final_spread_mean": 444.911,
+      "final_spread_std": 52.89222134681054,
+      "quality_ratio_vs_full_mc": 1.0,
+      "candidate_fraction_vs_full_mc": 0.9214574898785425,
+      "sample_fraction_vs_full_mc": 0.9186234817813765,
+      "oracle_stats": {
+        "candidate_evaluations": 1138,
+        "mc_candidate_samples": 45380,
+        "live_edge_samples": 400,
+        "learned_evaluations": 1235
+      },
+      "mode_counts": {
+        "trusted_fast_path": 1,
+        "trust_fallback_full_mc40": 9
+      },
+      "trust_rho_per_step": [
+        0.4156521739130435,
+        0.0026086956521739132,
+        -0.08347826086956522,
+        0.3556521739130435,
+        0.29391304347826086,
+        0.2391304347826087,
+        0.1408695652173913,
+        -0.009565217391304347,
+        -0.03217391304347826,
+        0.21565217391304348
+      ],
+      "trusted_per_step": [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "sentinel_surprise_per_step": [
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "verified_per_step": [
+        24,
+        127,
+        126,
+        125,
+        124,
+        123,
+        122,
+        121,
+        120,
+        119
+      ]
+    },
+    "tau_0.4_alpha_1": {
+      "alpha": 1.0,
+      "trust_tau": 0.4,
+      "mean_clean_corrupt_spearman": 0.0010153461213250204,
+      "selected_seeds": [
+        1265,
+        3519,
+        228,
+        410,
+        1807,
+        5753,
+        310,
+        892,
+        2216,
+        9070
+      ],
+      "final_spread_mean": 444.911,
+      "final_spread_std": 52.89222134681054,
+      "quality_ratio_vs_full_mc": 1.0,
+      "candidate_fraction_vs_full_mc": 1.0,
+      "sample_fraction_vs_full_mc": 1.0,
+      "oracle_stats": {
+        "candidate_evaluations": 1235,
+        "mc_candidate_samples": 49400,
+        "live_edge_samples": 400,
+        "learned_evaluations": 1235
+      },
+      "mode_counts": {
+        "trust_fallback_full_mc40": 10
+      },
+      "trust_rho_per_step": [
+        0.05478260869565217,
+        -0.16956521739130434,
+        -0.011304347826086957,
+        0.08956521739130435,
+        0.1782608695652174,
+        0.2026086956521739,
+        -0.018260869565217393,
+        -0.12869565217391304,
+        0.11217391304347826,
+        0.14956521739130435
+      ],
+      "trusted_per_step": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "sentinel_surprise_per_step": [
+        true,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        false,
+        true,
+        false
+      ],
+      "verified_per_step": [
+        128,
+        127,
+        126,
+        125,
+        124,
+        123,
+        122,
+        121,
+        120,
+        119
+      ]
+    },
+    "tau_0.5_alpha_0": {
+      "alpha": 0.0,
+      "trust_tau": 0.5,
+      "mean_clean_corrupt_spearman": 1.0,
+      "selected_seeds": [
+        1265,
+        410,
+        310,
+        3519,
+        228,
+        1807,
+        5753,
+        892,
+        2216,
+        9070
+      ],
+      "final_spread_mean": 446.453,
+      "final_spread_std": 52.66064746088867,
+      "quality_ratio_vs_full_mc": 1.003465861711668,
+      "candidate_fraction_vs_full_mc": 0.6582995951417004,
+      "sample_fraction_vs_full_mc": 0.645748987854251,
+      "oracle_stats": {
+        "candidate_evaluations": 813,
+        "mc_candidate_samples": 31900,
+        "live_edge_samples": 400,
+        "learned_evaluations": 1235
+      },
+      "mode_counts": {
+        "trusted_fast_path": 5,
+        "trust_fallback_full_mc40": 5
+      },
+      "trust_rho_per_step": [
+        0.7973913043478261,
+        0.6539130434782608,
+        0.7034782608695652,
+        0.5626086956521739,
+        0.4147826086956522,
+        0.5060869565217392,
+        0.2747826086956522,
+        0.2817391304347826,
+        0.4182608695652174,
+        0.17391304347826086
+      ],
+      "trusted_per_step": [
+        true,
+        true,
+        true,
+        true,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "sentinel_surprise_per_step": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true
+      ],
+      "verified_per_step": [
+        24,
+        24,
+        24,
+        80,
+        124,
+        24,
+        122,
+        121,
+        120,
+        119
+      ]
+    },
+    "tau_0.5_alpha_0.5": {
+      "alpha": 0.5,
+      "trust_tau": 0.5,
+      "mean_clean_corrupt_spearman": 0.629344844137157,
+      "selected_seeds": [
+        1265,
+        3519,
+        228,
+        410,
+        1807,
+        310,
+        5753,
+        892,
+        2216,
+        9070
+      ],
+      "final_spread_mean": 445.957,
+      "final_spread_std": 50.96372387296674,
+      "quality_ratio_vs_full_mc": 1.0023510320041535,
+      "candidate_fraction_vs_full_mc": 0.7716599190283401,
+      "sample_fraction_vs_full_mc": 0.7631578947368421,
+      "oracle_stats": {
+        "candidate_evaluations": 953,
+        "mc_candidate_samples": 37700,
+        "live_edge_samples": 400,
+        "learned_evaluations": 1235
+      },
+      "mode_counts": {
+        "trusted_fast_path": 3,
+        "trust_fallback_full_mc40": 7
+      },
+      "trust_rho_per_step": [
+        0.6443478260869565,
+        0.35304347826086957,
+        0.44608695652173913,
+        0.3095652173913043,
+        0.542608695652174,
+        0.691304347826087,
+        0.21739130434782608,
+        0.2756521739130435,
+        0.34,
+        0.14695652173913043
+      ],
+      "trusted_per_step": [
+        true,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "sentinel_surprise_per_step": [
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false
+      ],
+      "verified_per_step": [
+        24,
+        127,
+        126,
+        125,
+        24,
+        24,
+        122,
+        121,
+        120,
+        119
+      ]
+    },
+    "tau_0.5_alpha_0.75": {
+      "alpha": 0.75,
+      "trust_tau": 0.5,
+      "mean_clean_corrupt_spearman": 0.27203246804349257,
+      "selected_seeds": [
+        1265,
+        3519,
+        228,
+        410,
+        1807,
+        5753,
+        310,
+        892,
+        2216,
+        9070
+      ],
+      "final_spread_mean": 444.911,
+      "final_spread_std": 52.89222134681054,
+      "quality_ratio_vs_full_mc": 1.0,
+      "candidate_fraction_vs_full_mc": 1.0,
+      "sample_fraction_vs_full_mc": 1.0,
+      "oracle_stats": {
+        "candidate_evaluations": 1235,
+        "mc_candidate_samples": 49400,
+        "live_edge_samples": 400,
+        "learned_evaluations": 1235
+      },
+      "mode_counts": {
+        "trust_fallback_full_mc40": 10
+      },
+      "trust_rho_per_step": [
+        0.4156521739130435,
+        0.0026086956521739132,
+        -0.08347826086956522,
+        0.3556521739130435,
+        0.29391304347826086,
+        0.2391304347826087,
+        0.1408695652173913,
+        -0.009565217391304347,
+        -0.03217391304347826,
+        0.21565217391304348
+      ],
+      "trusted_per_step": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "sentinel_surprise_per_step": [
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "verified_per_step": [
+        128,
+        127,
+        126,
+        125,
+        124,
+        123,
+        122,
+        121,
+        120,
+        119
+      ]
+    },
+    "tau_0.5_alpha_1": {
+      "alpha": 1.0,
+      "trust_tau": 0.5,
+      "mean_clean_corrupt_spearman": 0.0010153461213250204,
+      "selected_seeds": [
+        1265,
+        3519,
+        228,
+        410,
+        1807,
+        5753,
+        310,
+        892,
+        2216,
+        9070
+      ],
+      "final_spread_mean": 444.911,
+      "final_spread_std": 52.89222134681054,
+      "quality_ratio_vs_full_mc": 1.0,
+      "candidate_fraction_vs_full_mc": 1.0,
+      "sample_fraction_vs_full_mc": 1.0,
+      "oracle_stats": {
+        "candidate_evaluations": 1235,
+        "mc_candidate_samples": 49400,
+        "live_edge_samples": 400,
+        "learned_evaluations": 1235
+      },
+      "mode_counts": {
+        "trust_fallback_full_mc40": 10
+      },
+      "trust_rho_per_step": [
+        0.05478260869565217,
+        -0.16956521739130434,
+        -0.011304347826086957,
+        0.08956521739130435,
+        0.1782608695652174,
+        0.2026086956521739,
+        -0.018260869565217393,
+        -0.12869565217391304,
+        0.11217391304347826,
+        0.14956521739130435
+      ],
+      "trusted_per_step": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "sentinel_surprise_per_step": [
+        true,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        false,
+        true,
+        false
+      ],
+      "verified_per_step": [
+        128,
+        127,
+        126,
+        125,
+        124,
+        123,
+        122,
+        121,
+        120,
+        119
+      ]
+    }
+  },
+  "interpretation": {
+    "naive_random_predictor_failure": {
+      "spread": 369.541,
+      "ratio": 0.8306,
+      "candidate_evaluations": 224,
+      "mc_candidate_samples": 5560
+    },
+    "trust_gate_random_predictor": {
+      "spread": 444.911,
+      "ratio": 1.0,
+      "candidate_evaluations": 1235,
+      "mc_candidate_samples": 49400,
+      "fallback_steps": 10
+    },
+    "next_goal": "combine trust audit with progressive MC fast path to recover clean-case efficiency"
+  }
+}
