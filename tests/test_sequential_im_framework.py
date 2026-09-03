@@ -1,4 +1,4 @@
-from grl.algorithms import full_oracle_greedy, learned_greedy, selective_greedy
+from grl.algorithms import adaptive_selective_greedy, full_oracle_greedy, learned_greedy, selective_greedy
 
 
 class StubOracle:
@@ -25,3 +25,16 @@ def test_sequential_framework_paths():
     selective = selective_greedy(pool, 1, learned2, exact2, top_m=2)
     assert selective.selected_seeds == [2]
     assert len(exact2.calls[0][1]) == 2
+
+
+def test_adaptive_expands_and_can_fallback():
+    pool = [0, 1, 2, 3, 4]
+    learned = StubOracle({0: 10.0, 1: 9.0, 2: 8.0, 3: 7.0, 4: 6.0})
+    exact = StubOracle({0: 1.0, 1: 2.0, 2: 20.0, 3: 3.0, 4: 4.0})
+    result = adaptive_selective_greedy(
+        pool, 1, learned, exact,
+        initial_m=2, batch_m=1, residual_beta=2.0, min_rounds=2, max_m=None,
+    )
+    assert result.selected_seeds == [2]
+    assert result.steps[0]["verified"] >= 3
+    assert len(exact.calls) >= 2

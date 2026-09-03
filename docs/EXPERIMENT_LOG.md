@@ -36,3 +36,13 @@ This file is a concise index of experiments worth remembering. Raw logs, checkpo
 **Interpretation:** This is a usable framework/result anchor, not the final paper result. Selective correction materially closes the quality gap while using much fewer exact candidate evaluations. The next algorithmic priority is to improve learned shortlist recall and replace fixed Top-M with adaptive trust/certification; full-graph/RIS scaling comes after that.
 
 **Compact artifact:** `docs/results/nethept_end_to_end_20260903.json`.
+
+
+## 2026-09-03 — Sequential shortlist and adaptive certification
+**Protocol:** NetHEPT, 128-candidate shared pool, budget 10, MC40 selection oracle, MC1000 final spread evaluation.
+
+**Sequential shortlist diagnostic:** true Full-MC winner ranks under the state-aware predictor are `[1, 57, 87, 2, 2, 42, 1, 8, 1, 32]` (Top-32 recall 0.70; Top-64 recall 0.90). This explains the fixed Top-M quality ceiling.
+
+**Adaptive result:** residual-envelope adaptive refinement with `beta=0.5` obtains spread **443.626** versus Full-MC **444.911** (ratio **0.9971**) using **512** exact candidate evaluations versus **1235** (fraction **0.4146**). With per-step MC-world reuse it uses 400 live-edge worlds and takes 32.4s in the current NetworkX prototype.
+
+**Interpretation:** the main predictor metric for the next phase is sequential hard-state Top-K recall, and the main algorithmic direction is adaptive certification/fallback rather than a fixed shortlist. See `docs/results/nethept_adaptive_certification_20260903.json`.

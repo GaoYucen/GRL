@@ -1,0 +1,207 @@
+{
+  "date": "2026-09-03",
+  "dataset": "NetHEPT",
+  "config": {
+    "pool_size": 128,
+    "budget": 10,
+    "oracle_mc": 40,
+    "eval_mc": 1000
+  },
+  "full_mc_reference": {
+    "spread": 444.911,
+    "exact_candidate_evaluations": 1235,
+    "mc_candidate_samples": 49400,
+    "live_edge_samples": 400,
+    "selection_seconds_previous_prototype": 23.102
+  },
+  "sequential_shortlist_diagnostic": {
+    "top_1_recall": 0.3,
+    "top_4_recall": 0.5,
+    "top_8_recall": 0.6,
+    "top_16_recall": 0.6,
+    "top_32_recall": 0.7,
+    "top_64_recall": 0.9,
+    "mean_rank": 23.3,
+    "max_rank": 87,
+    "ranks": [
+      1,
+      57,
+      87,
+      2,
+      2,
+      42,
+      1,
+      8,
+      1,
+      32
+    ],
+    "full_mc_seeds": [
+      1265,
+      3519,
+      228,
+      410,
+      1807,
+      5753,
+      310,
+      892,
+      2216,
+      9070
+    ]
+  },
+  "fixed_top_m": [
+    {
+      "top_m": 8,
+      "quality_ratio": 0.9264459633499733,
+      "exact_fraction": 0.06477732793522267
+    },
+    {
+      "top_m": 16,
+      "quality_ratio": 0.9307501949828167,
+      "exact_fraction": 0.12955465587044535
+    },
+    {
+      "top_m": 32,
+      "quality_ratio": 0.9502484766616245,
+      "exact_fraction": 0.2591093117408907
+    }
+  ],
+  "adaptive_sweep_before_world_reuse": {
+    "adaptive_beta_0.5": {
+      "spread": 443.626,
+      "quality_ratio_vs_full_mc": 0.9971117819069432,
+      "exact_candidate_evaluations": 512,
+      "exact_fraction_vs_full_mc": 0.4145748987854251,
+      "live_edge_samples": 2560,
+      "selection_seconds": 139.72930588806048,
+      "verified_per_step": [
+        16,
+        16,
+        16,
+        80,
+        64,
+        112,
+        96,
+        80,
+        16,
+        16
+      ],
+      "selected_seeds": [
+        1265,
+        410,
+        310,
+        3519,
+        1807,
+        228,
+        5753,
+        892,
+        2216,
+        985
+      ]
+    },
+    "adaptive_beta_1": {
+      "spread": 445.224,
+      "quality_ratio_vs_full_mc": 1.0007035114888145,
+      "exact_candidate_evaluations": 820,
+      "exact_fraction_vs_full_mc": 0.6639676113360324,
+      "live_edge_samples": 4120,
+      "selection_seconds": 247.0215395358391,
+      "verified_per_step": [
+        16,
+        16,
+        16,
+        125,
+        104,
+        104,
+        88,
+        112,
+        120,
+        119
+      ],
+      "selected_seeds": [
+        1265,
+        410,
+        310,
+        228,
+        3519,
+        5753,
+        1807,
+        892,
+        2216,
+        9070
+      ]
+    },
+    "adaptive_beta_2": {
+      "spread": 444.911,
+      "quality_ratio_vs_full_mc": 1.0,
+      "exact_candidate_evaluations": 1092,
+      "exact_fraction_vs_full_mc": 0.8842105263157894,
+      "live_edge_samples": 5560,
+      "selection_seconds": 319.9294291299302,
+      "verified_per_step": [
+        32,
+        127,
+        126,
+        96,
+        124,
+        123,
+        104,
+        121,
+        120,
+        119
+      ],
+      "selected_seeds": [
+        1265,
+        3519,
+        228,
+        410,
+        1807,
+        5753,
+        310,
+        892,
+        2216,
+        9070
+      ]
+    }
+  },
+  "cached_world_primary": {
+    "beta": 0.5,
+    "spread": 443.626,
+    "quality_ratio_vs_full_mc": 0.9971117819069432,
+    "exact_candidate_evaluations": 512,
+    "exact_fraction_vs_full_mc": 0.4145748987854251,
+    "mc_candidate_samples": 20480,
+    "live_edge_samples": 400,
+    "selection_seconds": 32.38783254590817,
+    "verified_per_step": [
+      16,
+      16,
+      16,
+      80,
+      64,
+      112,
+      96,
+      80,
+      16,
+      16
+    ],
+    "selected_seeds": [
+      1265,
+      410,
+      310,
+      3519,
+      1807,
+      228,
+      5753,
+      892,
+      2216,
+      985
+    ]
+  },
+  "interpretation": [
+    "Offline ranking quality does not guarantee sequential Top-M recall; true-best learned ranks on the Full-MC trajectory are [1,57,87,2,2,42,1,8,1,32].",
+    "Fixed Top-32 misses several hard states and plateaus near 95% of Full-MC spread.",
+    "Adaptive residual-envelope refinement with beta=0.5 reaches 99.71% of Full-MC spread while using 41.46% of exact candidate evaluations.",
+    "Reusing the same Monte Carlo live-edge worlds within a greedy step reduces beta=0.5 live-edge samples from 2560 to 400 and prototype selection time from 139.7s to 32.4s without changing the selected solution or spread.",
+    "The residual envelope is currently an empirical operational certificate, not yet a formal probabilistic guarantee."
+  ]
+}

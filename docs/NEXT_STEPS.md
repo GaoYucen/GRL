@@ -36,3 +36,14 @@ Last updated: 2026-09-03
 
 ## Session-resume instruction
 A new session should start by reading `AGENTS.md`, `docs/RESEARCH_STATE.md`, `docs/EXPERIMENT_LOG.md`, and this file. The immediate next target is shortlist recall + adaptive certification, not further micro-tuning of regression metrics.
+
+
+## P0 — After the first adaptive end-to-end result
+- [x] Measure step-level sequential shortlist recall and identify hard states.
+- [x] Implement adaptive candidate refinement with a robust all-candidate fallback.
+- [x] Reuse common MC live-edge worlds within each greedy step.
+- [ ] Improve predictor training specifically on sequential hard states (large true-winner rank / regret), rather than optimizing global MAE.
+- [ ] Replace the empirical residual envelope with calibrated uncertainty / confidence bounds and test coverage.
+- [ ] Add adaptive MC sample allocation so both candidate count and simulations per candidate are refined only when needed.
+- [ ] Run robustness stress tests with degraded/noisy/shuffled predictors and verify automatic fallback.
+- [ ] Extend beyond the fixed 128-candidate prototype to larger/all-node candidate settings and then RIS-style scalable oracles.

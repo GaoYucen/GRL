@@ -17,13 +17,23 @@ class OracleStats:
 
 
 class BatchedMonteCarloMarginalOracle:
-    """Monte-Carlo marginal oracle that reuses each live-edge world across candidates."""
+    """Monte-Carlo marginal oracle with per-step common-random-number reuse.
+
+    All candidate scoring calls made for the same ``(step, seed set)`` reuse the
+    exact same sampled live-edge worlds and base reachability sets. This matters
+    for adaptive shortlist expansion: growing Top-M no longer regenerates Monte
+    Carlo worlds on every refinement round, so candidate-query savings translate
+    into actual compute savings and comparisons within a step use common random
+    numbers.
+    """
 
     def __init__(self, graph: nx.Graph | nx.DiGraph, mc_runs: int = 40, random_seed: int = 42):
         self.graph = graph
         self.mc_runs = int(mc_runs)
         self.random_seed = int(random_seed)
         self.stats = OracleStats()
+        self._cache_key: tuple[int, tuple[int, ...]] | None = None
+        self._cached_worlds: list[tuple[nx.Graph | nx.DiGraph, set[int]]] = []
 
     def _reached(self, live_graph, seeds: Iterable[int]) -> set[int]:
         reached: set[int] = set()
@@ -35,18 +45,36 @@ class BatchedMonteCarloMarginalOracle:
             reached.add(seed)
         return reached
 
-    def score(self, seeds: list[int], candidates: list[int], step: int = 0) -> dict[int, float]:
-        if not candidates:
-            return {}
-        totals = {int(v): 0.0 for v in candidates}
+    def _ensure_worlds(self, seeds: list[int], step: int) -> list[tuple[nx.Graph | nx.DiGraph, set[int]]]:
+        key = (int(step), tuple(sorted(int(v) for v in seeds)))
+        if key == self._cache_key and self._cached_worlds:
+            return self._cached_worlds
+
+        worlds: list[tuple[nx.Graph | nx.DiGraph, set[int]]] = []
         for offset in range(self.mc_runs):
-            rng = random.Random(self.random_seed + step * 1_000_003 + offset)
+            rng = random.Random(self.random_seed + int(step) * 1_000_003 + offset)
             live_graph = nx.DiGraph() if self.graph.is_directed() else nx.Graph()
             live_graph.add_nodes_from(self.graph.nodes())
             for u, v, data in self.graph.edges(data=True):
                 if rng.random() < float(data.get("weight", 0.0)):
                     live_graph.add_edge(u, v)
-            base = self._reached(live_graph, seeds)
+            worlds.append((live_graph, self._reached(live_graph, seeds)))
+
+        self._cache_key = key
+        self._cached_worlds = worlds
+        self.stats.live_edge_samples += self.mc_runs
+        return worlds
+
+    def clear_step_cache(self) -> None:
+        self._cache_key = None
+        self._cached_worlds = []
+
+    def score(self, seeds: list[int], candidates: list[int], step: int = 0) -> dict[int, float]:
+        if not candidates:
+            return {}
+        totals = {int(v): 0.0 for v in candidates}
+        worlds = self._ensure_worlds(seeds, step)
+        for live_graph, base in worlds:
             for candidate in candidates:
                 if candidate in base:
                     gain = 0
@@ -61,7 +89,6 @@ class BatchedMonteCarloMarginalOracle:
         n = len(candidates)
         self.stats.candidate_evaluations += n
         self.stats.mc_candidate_samples += n * self.mc_runs
-        self.stats.live_edge_samples += self.mc_runs
         return {v: total / self.mc_runs for v, total in totals.items()}
 
 

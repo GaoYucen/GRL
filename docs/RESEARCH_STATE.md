@@ -1,6 +1,6 @@
 # GRL Research State
 
-Last updated: 2026-09-02
+Last updated: 2026-09-03
 
 ## Scope
 The project targets **Influence Maximization** rather than generic combinatorial optimization.
@@ -38,3 +38,12 @@ Several GRL-specific pre-experiment/worktree directories currently live inside `
 - The first end-to-end sequential IM framework is now implemented with explicit learned-oracle, batched-MC-oracle, full-greedy, learned-greedy, and selective-refinement components.
 - NetHEPT first prototype (fixed 128-candidate pool, budget 10, MC=40 for selection, MC=1000 for final spread): Full-MC spread 444.911; learned-only state-aware spread 321.526 (72.3% of Full-MC); selective Top-8/16/32 reaches 92.6%/93.1%/95.0% of Full-MC while using 6.5%/13.0%/25.9% of Full-MC exact candidate evaluations.
 - Interpretation: the end-to-end learning-augmented route is operational and useful, but learned-only ranking over a broader sequential candidate pool is not yet strong enough. The immediate bottleneck is shortlist recall / certification quality, not whether the overall sequential framework works.
+
+
+## 2026-09-03 adaptive certification milestone
+- Sequential diagnosis on the Full-MC trajectory shows the learned ranks of the true best candidate are `[1, 57, 87, 2, 2, 42, 1, 8, 1, 32]`; therefore offline marginal-ranking metrics substantially overstate fixed-shortlist reliability.
+- Fixed Top-8/16/32 refinement reaches 92.64% / 93.08% / 95.02% of Full-MC spread while using 6.48% / 12.96% / 25.91% of exact candidate evaluations.
+- Adaptive residual-envelope refinement (`beta=0.5`) reaches **443.626 spread = 99.71% of Full-MC** with **512 / 1235 = 41.46%** of exact candidate evaluations.
+- Per-step exact verification is `[16, 16, 16, 80, 64, 112, 96, 80, 16, 16]`, demonstrating the intended easy-state / hard-state adaptive behavior.
+- Reusing common live-edge worlds within each greedy step reduces adaptive live-edge generation from 2560 to 400 and prototype selection time from 139.7s to 32.4s without changing quality.
+- Current certification is empirical/operational; formal uncertainty calibration and a robustness guarantee remain open.
