@@ -64,3 +64,22 @@ We therefore added an online trust audit. At every greedy step it evaluates the 
 On NetHEPT (128 candidates, budget=10), tau=0.3 gives the best first-pass consistency/robustness tradeoff. Clean predictor: spread 443.591 (99.70% of Full-MC), 802 exact candidate evaluations, 31,440 MC candidate-samples, 3/10 fallback steps. Moderate corruption alpha=0.5: spread 446.189 under the finite evaluation protocol, 769 exact evaluations, 30,060 samples, 5/10 fallbacks. Strong corruption alpha=0.75: spread 444.911, 1,044 exact evaluations, 41,480 samples, 8/10 fallbacks. Fully randomized predictor alpha=1.0: all 10 steps fall back, exactly recovering the Full-MC reference cost (1,235 candidates / 49,400 samples) and measured spread 444.911.
 
 Values slightly above the Full-MC reference at intermediate corruption levels are finite-MC / trajectory effects and must not be interpreted as outperforming exact greedy. The important result is graceful fallback: as prediction trust collapses, the method approaches classical Full-MC behavior instead of becoming cheaper and catastrophically worse.
+
+## 2026-09-04 — Multi-seed trust calibration: robustness trend survives independent randomness
+
+**Protocol:** NetHEPT; shared 128-candidate pool; budget 10; five independent repeats. Predictor corruption, MC-oracle worlds, and final-spread evaluation use separate repeat-specific random seeds. Each repeat has its own same-seed Full-MC40 reference. The frozen trust-progressive configuration is `tau=0.3`, audit MC20, Top-16 audit head, four rank-spaced sentinels, and the validated progressive 5→10→20→40 fast path.
+
+**Aggregate results:**
+- Full-MC reference spread: **445.154 ± 3.154**, 49,400 MC candidate-samples.
+- Clean predictor (`alpha=0`): mean quality ratio **1.0005 ± 0.0082**, mean **26,004 samples = 52.6%** of Full-MC, **4.4 ± 1.5 fallback steps**.
+- Moderate corruption (`alpha=0.5`, predictor Spearman ≈0.624): quality ratio **1.0030 ± 0.0093**, **24,542 samples = 49.7%**, **4.0 ± 1.6 fallbacks**.
+- Strong corruption (`alpha=0.75`, predictor Spearman ≈0.248): quality ratio **1.0019 ± 0.0045**, **41,171 samples = 83.3%**, **7.6 ± 0.5 fallbacks**.
+- Randomized predictor (`alpha=1`, predictor Spearman ≈−0.040): quality ratio **0.9998 ± 0.0005**, **47,161 samples = 95.5%**, **9.4 ± 0.9 fallbacks**.
+
+**Interpretation:** the desired learning-augmented behavior is now visible across independent randomness: solution quality remains essentially at the Full-MC reference while oracle effort rises sharply as predictor quality collapses. A randomized predictor no longer causes the earlier catastrophic 83.06% quality failure; the solver approaches classical Full-MC cost automatically. It is not necessary for every random-predictor step to trigger literal full fallback, because trusted progressive verification can occasionally certify a decision safely.
+
+**Current bottleneck:** clean-case **efficiency variance / false distrust**, not robustness. Across the five clean repeats, fallback count ranges from 2/10 to 6/10 and sample fraction from 41.4% to 64.2%. Therefore the next step is statistical/held-out calibration of the audit trust score, not another hand-tuned threshold sweep.
+
+**Caveat:** quality ratios slightly above 1 are finite-MC / trajectory effects, not evidence of outperforming Full-MC greedy. This remains a 128-candidate prototype; full-graph/RIS and multi-dataset evidence are still required.
+
+**Compact artifact:** `docs/results/nethept_trust_calibration_multiseed_20260904.json`.
