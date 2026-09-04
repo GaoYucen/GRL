@@ -1,0 +1,22 @@
+\section{Experiments}
+\label{sec:experiments}
+
+We organize the experiments around five research questions rather than around implementation modules.
+
+\paragraph{RQ1: Is learned marginal gain genuinely state aware?}
+We evaluate cross-state conditional ranking, same-candidate sensitivity, and diminishing-return response under strict unseen-state and overlap-stress settings.
+
+\paragraph{RQ2: Can learned advice reduce oracle work without sacrificing influence quality?}
+We compare learned-only selection, fixed verification, the proposed audited progressive solver, and strong classical references using influence quality, oracle work, and wall-clock/runtime breakdowns.
+
+\paragraph{RQ3: Does the solver degrade gracefully when predictions become unreliable?}
+We inject controlled corruption from clean through severe and random predictors. A successful learning-augmented method should increase verification cost as advice worsens while keeping final spread close to a classical reference.
+
+\paragraph{RQ4: Does the method remain valid from full-graph inputs?}
+We run independent full-graph RR/RIS screening before the learned sequential stage and report shortlist recall together with end-to-end quality and cost.
+
+\paragraph{RQ5: Is the tradeoff stable across shortlist sizes, seed budgets, and graphs?}
+We test $M\in\{64,128,256\}$, multiple seed budgets, and multiple standard IM graphs. Paper-grade RIS baselines and final ablations are added here as the remaining experiments complete.
+
+\paragraph{Current preliminary evidence.}
+On NetHEPT full-graph runs, the current closure experiments retain strong seeds in the screened shortlist and achieve approximately $98.9\%$ of the RR-reference influence quality while using roughly $59.1\%$ of the expensive Monte Carlo verification cost. These numbers are preliminary and will be replaced by the final multi-dataset, multi-budget table before submission.

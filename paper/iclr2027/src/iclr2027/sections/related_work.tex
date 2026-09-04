@@ -1,0 +1,11 @@
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Classical influence maximization and scalable influence estimation.}
+We will position the method against greedy influence maximization, Monte Carlo evaluation, and modern reverse-influence-sampling (RIS) solvers. The final version will emphasize strong paper-grade RIS baselines rather than weak heuristics.
+
+\paragraph{Learning-based influence maximization.}
+Prior GNN- and reinforcement-learning-based approaches learn node scores, seed-selection policies, or value/marginal surrogates. Our distinction is not that marginal gains have never been predicted; it is the explicit online interface that audits learned advice, allocates classical verification adaptively, and falls back when advice is unreliable.
+
+\paragraph{Learning-augmented algorithms and prediction with verification.}
+Our framework is most closely related in spirit to learning-augmented optimization: predictions are used to improve efficiency when helpful while a non-learned mechanism limits damage from poor advice. The final literature review will sharpen the connection to consistency/robustness and safe-verification principles without overstating guarantees that are not proved here.

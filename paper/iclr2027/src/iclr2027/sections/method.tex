@@ -1,0 +1,29 @@
+\section{Learning-Augmented Influence Maximization}
+\label{sec:method}
+
+\subsection{Problem and Learned-Advice Interface}
+Let $G=(V,E)$ denote a diffusion graph and let $\sigma(S)$ be the expected spread of seed set $S\subseteq V$. Given a seed budget $k$, influence maximization seeks
+\begin{equation}
+    \max_{S\subseteq V,\, |S|\le k} \sigma(S).
+\end{equation}
+At a sequential state $S$, the conditional marginal gain of candidate $v\notin S$ is
+\begin{equation}
+    \Delta(v\mid S)=\sigma(S\cup\{v\})-\sigma(S).
+\end{equation}
+We assume access to a learned advice model $\widehat{\Delta}(v\mid S)$ that is inexpensive relative to a high-fidelity classical influence oracle. Crucially, we make no assumption that the advice is uniformly accurate.
+
+\subsection{Full-Graph Candidate Screening}
+The full graph is first reduced to a high-recall shortlist $C_M$ using a cheap global RR/RIS sketch. This separates global scalability from the harder sequential conditional-ranking problem. Unless otherwise specified, our default shortlist size is $M=128$, while $M\in\{64,128,256\}$ is used to expose the quality--cost sensitivity.
+
+\subsection{State-Aware Marginal Proposal}
+For candidates in $C_M\setminus S$, a graph predictor estimates $\widehat{\Delta}(v\mid S)$. Training explicitly exposes candidate nodes under multiple seed states and supervises conditional changes in gain, reducing the candidate-strength shortcut in which a model predicts mostly static node quality while ignoring diminishing returns.
+
+\subsection{Audited Residual Trust Test}
+At each decision step, we evaluate a small predicted head together with rank-spaced sentinel candidates using a limited-budget classical oracle. For each audited candidate, define the residual
+\begin{equation}
+    r(v\mid S)=\Delta_{\mathrm{audit}}(v\mid S)-\widehat{\Delta}(v\mid S).
+\end{equation}
+The audited residuals are used to estimate whether an unverified outsider can plausibly overturn the current audited winner. Unlike a generic correlation statistic, this trust test is aligned with the downstream failure event we care about: excluding a candidate that could beat the verified head.
+
+\subsection{Progressive Verification and Fallback}
+If the audit indicates that the current head is safe, we progressively increase candidate coverage and influence-estimation budget only as needed. If the residual audit signals unreliable advice, the solver expands verification and, in the limiting case, falls back to all-candidate classical evaluation. Thus the learned model proposes where to spend oracle computation, while classical verification retains control of the final sequential decision.
