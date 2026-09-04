@@ -1,22 +1,42 @@
 \section{Experiments}
 \label{sec:experiments}
 
-We organize the experiments around five research questions rather than around implementation modules.
+We organize the experiments around five research questions. Unless otherwise stated, the current full-graph closure uses NetHEPT under the independent-cascade model with $|V|=15{,}233$, seed budget $k=10$, an independent 50k-RR screening sketch, shortlist size $M=128$, and 1,000 Monte Carlo worlds for final spread evaluation. Reported closure numbers use three independent repeats.
+
+\begin{figure}[t]
+    \centering
+    \resizebox{0.98\linewidth}{!}{\input{figures/fig2_state_and_verification.tex}}
+    \caption{Diagnostics motivating the design. \textbf{(a)} State-aware supervision raises same-candidate cross-state Spearman from $0.267$ to $0.908$ and restores the response to diminishing returns. \textbf{(b)} Learned-only sequential selection reaches only about $72\%$ of Full-MC quality; selectively verifying the predicted head recovers $92.6$--$95.0\%$ as verification increases.}
+    \label{fig:diagnostics}
+\end{figure}
 
 \paragraph{RQ1: Is learned marginal gain genuinely state aware?}
-We evaluate cross-state conditional ranking, same-candidate sensitivity, and diminishing-return response under strict unseen-state and overlap-stress settings.
+Figure~\ref{fig:diagnostics}(a) evaluates the same candidate under multiple overlap-controlled seed states. The state-unaware baseline attains mean same-candidate Spearman $0.267$ and explains only $10.4\%$ of the true within-candidate dynamic range. With state-aware supervision, these values improve to $0.908$ and $71.1\%$, respectively; pairwise cross-state accuracy rises from $62.5\%$ to $93.8\%$. This confirms that strong aggregate node ranking alone is insufficient for the conditional decisions required by sequential IM.
 
 \paragraph{RQ2: Can learned advice reduce oracle work without sacrificing influence quality?}
-We compare learned-only selection, fixed verification, the proposed audited progressive solver, and strong classical references using influence quality, oracle work, and wall-clock/runtime breakdowns.
+Figure~\ref{fig:diagnostics}(b) first isolates the need for verification: learned-only selection compounds ranking errors, whereas fixed Top-$m$ verification repairs much of the loss. We then test the full audited progressive solver from complete graph inputs. Table~\ref{tab:fullgraph} shows that the proposed method retains $98.86\%\pm1.09\%$ of the independent RR reference quality while using $59.08\%\pm8.46\%$ of the expensive Monte Carlo candidate-sample work required by screened Full-MC selection.
+
+\begin{table}[t]
+\centering
+\small
+\caption{Current full-graph NetHEPT closure ($k=10$, $M=128$, three repeats). ``MC fraction'' is expensive candidate-sample work relative to screened Full-MC selection; the independent RR reference uses a different RIS oracle and is therefore not assigned an MC fraction.}
+\label{tab:fullgraph}
+\begin{tabular}{lccc}
+\toprule
+Method & Final spread & Quality vs. RR & MC fraction \\
+\midrule
+Independent RR reference (50k) & $506.74\pm3.53$ & $1.000$ & -- \\
+Screened Full-MC & $508.47\pm1.96$ & $1.003\pm0.011$ & $1.000$ \\
+\textbf{Audited progressive (ours)} & $500.94\pm2.44$ & $0.989\pm0.011$ & $0.591\pm0.085$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \paragraph{RQ3: Does the solver degrade gracefully when predictions become unreliable?}
-We inject controlled corruption from clean through severe and random predictors. A successful learning-augmented method should increase verification cost as advice worsens while keeping final spread close to a classical reference.
+We evaluate clean, moderately corrupted, severely corrupted, and random advice while keeping the classical oracle unchanged. The desired learning-augmented behavior is not that quality remains independent of prediction quality; rather, decreasing trust should trigger increased real-oracle work before a bad proposal can propagate through the sequence. Controlled-corruption experiments support this mechanism: progressive verification without a residual audit can fail under random rankings, whereas the audited variant expands verification and activates fallback. The final common-protocol sweep reports quality and oracle work jointly.
 
 \paragraph{RQ4: Does the method remain valid from full-graph inputs?}
-We run independent full-graph RR/RIS screening before the learned sequential stage and report shortlist recall together with end-to-end quality and cost.
+The full NetHEPT graph is screened before any learned sequential decision. Across three independent screening seeds, the Top-128 RR shortlist contains all seeds selected by an independent RR reference (recall $1.00\pm0.00$). The resulting end-to-end quality in Table~\ref{tab:fullgraph} therefore does not rely on constructing an artificial 128-node problem in advance; the compact decision set is produced from the complete graph by an independent global stage.
 
 \paragraph{RQ5: Is the tradeoff stable across shortlist sizes, seed budgets, and graphs?}
-We test $M\in\{64,128,256\}$, multiple seed budgets, and multiple standard IM graphs. Paper-grade RIS baselines and final ablations are added here as the remaining experiments complete.
-
-\paragraph{Current preliminary evidence.}
-On NetHEPT full-graph runs, the current closure experiments retain strong seeds in the screened shortlist and achieve approximately $98.9\%$ of the RR-reference influence quality while using roughly $59.1\%$ of the expensive Monte Carlo verification cost. These numbers are preliminary and will be replaced by the final multi-dataset, multi-budget table before submission.
+For $M\in\{64,128,256\}$ on NetHEPT, independent-RR seed recall remains $1.00$ in all three repeats. The audited solver exhibits a smooth quality--work tradeoff rather than a sharp dependence on a single shortlist size, motivating $M=128$ as the default. The paper-grade evaluation expands this protocol across seed budgets and additional standard IM graphs, together with strong RIS baselines and a compact ablation of state-aware advice, residual auditing, progressive verification, and fallback.

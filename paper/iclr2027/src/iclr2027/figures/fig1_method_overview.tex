@@ -1,0 +1,29 @@
+\begin{tikzpicture}[
+  font=\scriptsize,
+  box/.style={draw, rounded corners=2pt, align=center, minimum height=9mm, inner sep=2.5pt},
+  main/.style={box, text width=20mm},
+  small/.style={box, text width=23mm},
+  flow/.style={-{Latex[length=2mm]}, semithick},
+  back/.style={-{Latex[length=2mm]}, semithick, dashed}
+]
+\node[main] (graph) {Full graph $G$\\$15{,}233$ nodes};
+\node[main, right=4mm of graph] (screen) {Cheap global\\RR/RIS screening};
+\node[main, right=4mm of screen] (short) {Compact shortlist\\$C_M$, $M=128$};
+\node[main, right=4mm of short] (learn) {State-aware advice\\$\widehat{\Delta}(v\mid S)$};
+\node[main, right=4mm of learn] (audit) {Predicted head +\\sentinel audit};
+
+\node[small, below=9mm of audit] (fallback) {Expand oracle /\\classical fallback};
+\node[small, left=5mm of fallback] (verify) {Progressive candidate +\\sample verification};
+\node[small, left=9mm of verify] (select) {Select verified winner\\and update $S$};
+
+\draw[flow] (graph) -- (screen);
+\draw[flow] (screen) -- (short);
+\draw[flow] (short) -- (learn);
+\draw[flow] (learn) -- (audit);
+\draw[flow] (audit) |- node[pos=0.30, right] {unsafe} (fallback);
+\draw[flow] (audit) |- node[pos=0.30, left] {safe} (verify);
+\draw[flow] (fallback) -- (select);
+\draw[flow] (verify) -- (select);
+\draw[back] (select.north) to[out=110,in=250] node[midway, left] {$|S|<k$} (learn.south);
+\node[align=center, font=\scriptsize\bfseries, above=4mm of short] {Learned advice allocates expensive oracle work; audited verification retains decision control.};
+\end{tikzpicture}

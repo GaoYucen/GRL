@@ -10,20 +10,41 @@ At a sequential state $S$, the conditional marginal gain of candidate $v\notin S
 \begin{equation}
     \Delta(v\mid S)=\sigma(S\cup\{v\})-\sigma(S).
 \end{equation}
-We assume access to a learned advice model $\widehat{\Delta}(v\mid S)$ that is inexpensive relative to a high-fidelity classical influence oracle. Crucially, we make no assumption that the advice is uniformly accurate.
+We assume access to a learned advice model $\widehat{\Delta}(v\mid S)$ that is inexpensive relative to a high-fidelity classical influence oracle. Crucially, we make no assumption that this advice is uniformly accurate. The learned model proposes where expensive computation should be spent; an audited classical layer retains control of the actual seed decision. Figure~\ref{fig:overview} summarizes this interface.
+
+\begin{figure}[t]
+    \centering
+    \resizebox{0.98\linewidth}{!}{\input{figures/fig1_method_overview.tex}}
+    \caption{Overview of the learning-augmented IM pipeline. Independent full-graph screening creates a high-recall shortlist; a state-aware predictor proposes promising candidates; residual auditing decides whether progressive verification is sufficient or classical fallback is required.}
+    \label{fig:overview}
+\end{figure}
 
 \subsection{Full-Graph Candidate Screening}
-The full graph is first reduced to a high-recall shortlist $C_M$ using a cheap global RR/RIS sketch. This separates global scalability from the harder sequential conditional-ranking problem. Unless otherwise specified, our default shortlist size is $M=128$, while $M\in\{64,128,256\}$ is used to expose the quality--cost sensitivity.
+The full graph is first reduced to a high-recall shortlist $C_M$ using a cheap global RR/RIS sketch. This separates global scalability from the harder sequential conditional-ranking problem. Screening is deliberately independent of the learned marginal model: its role is only to retain plausible strong seeds before the state-dependent stage. Unless otherwise specified, our default shortlist size is $M=128$, while $M\in\{64,128,256\}$ is used to expose the quality--cost sensitivity.
 
 \subsection{State-Aware Marginal Proposal}
-For candidates in $C_M\setminus S$, a graph predictor estimates $\widehat{\Delta}(v\mid S)$. Training explicitly exposes candidate nodes under multiple seed states and supervises conditional changes in gain, reducing the candidate-strength shortcut in which a model predicts mostly static node quality while ignoring diminishing returns.
+For candidates in $C_M\setminus S$, a graph predictor estimates $\widehat{\Delta}(v\mid S)$. Training explicitly exposes candidate nodes under multiple seed states and supervises conditional changes in gain. This matters because a predictor can otherwise learn a candidate-strength shortcut: it assigns nearly static scores to intrinsically strong nodes while missing overlap-induced diminishing returns. We therefore treat cross-state sensitivity of the same candidate as a first-class diagnostic rather than relying only on aggregate regression accuracy.
 
 \subsection{Audited Residual Trust Test}
 At each decision step, we evaluate a small predicted head together with rank-spaced sentinel candidates using a limited-budget classical oracle. For each audited candidate, define the residual
 \begin{equation}
     r(v\mid S)=\Delta_{\mathrm{audit}}(v\mid S)-\widehat{\Delta}(v\mid S).
 \end{equation}
-The audited residuals are used to estimate whether an unverified outsider can plausibly overturn the current audited winner. Unlike a generic correlation statistic, this trust test is aligned with the downstream failure event we care about: excluding a candidate that could beat the verified head.
+The audited residuals estimate whether an unverified outsider can plausibly overturn the current audited winner. The trust statistic is therefore aligned with the downstream failure event that matters: excluding a candidate that could beat the verified head. When the audit is inconclusive, the method spends more oracle work rather than accepting the learned top candidate by default.
 
 \subsection{Progressive Verification and Fallback}
-If the audit indicates that the current head is safe, we progressively increase candidate coverage and influence-estimation budget only as needed. If the residual audit signals unreliable advice, the solver expands verification and, in the limiting case, falls back to all-candidate classical evaluation. Thus the learned model proposes where to spend oracle computation, while classical verification retains control of the final sequential decision.
+When the audit indicates that the current head is safe, the solver progressively increases candidate coverage and influence-estimation budget only as needed. If the residual audit signals unreliable advice, verification expands; in the limiting case the method falls back to all-candidate classical evaluation. Consequently, informative advice can reduce expensive evaluations while sufficiently poor advice drives computation back toward the classical solver.
+
+\begin{center}
+\fbox{\begin{minipage}{0.94\linewidth}
+\small
+\textbf{Algorithm 1: Audited learning-augmented influence maximization.}\\[-1mm]
+\textbf{Input:} graph $G$, budget $k$, shortlist size $M$, learned advice $\widehat{\Delta}$, classical influence oracle.\\[0.5mm]
+\textbf{1. Screen.} Build a high-recall shortlist $C_M$ from the full graph using an independent RR/RIS sketch.\\
+\textbf{2. Propose.} At state $S$, score $v\in C_M\setminus S$ with $\widehat{\Delta}(v\mid S)$ and form a predicted head plus rank-spaced sentinels.\\
+\textbf{3. Audit.} Evaluate the audit set with a small classical budget and estimate residual uncertainty relative to the current audited winner.\\
+\textbf{4. Verify progressively.} If outsider risk is controlled, increase candidate coverage and sample budget only as needed to verify the next decision.\\
+\textbf{5. Fall back when needed.} If the audit remains unsafe, expand classical evaluation up to the full candidate set.\\
+\textbf{6. Update.} Add the verified winner to $S$ and repeat Steps 2--5 until $|S|=k$.
+\end{minipage}}
+\end{center}
