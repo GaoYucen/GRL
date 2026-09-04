@@ -99,3 +99,32 @@ Five independent NetHEPT repeats (128-candidate shared pool, budget 10) give:
 Ratios slightly above 1 are finite-MC/trajectory noise and are not interpreted as outperforming Full-MC greedy. The important result is the cost response: useful predictions retain a large oracle saving, while degraded/random predictions automatically consume much more oracle work and preserve solution quality. The earlier Spearman gate is now retained as a failed/diagnostic ablation rather than the main method.
 
 **Compact artifact:** `docs/results/nethept_audited_residual_multiseed_20260904.json`.
+
+## 2026-09-04 — Candidate-scale stress test exposes proposal + certificate scaling failures
+
+The audited-residual gate was next tested beyond the original 128-candidate prototype. This test is intentionally diagnostic rather than a paper-ready scalability claim.
+
+### Fixed audit rule does not scale
+Using the frozen 128-pool rule (Top-16 + 8 rank-spaced sentinels, audit MC20, residual q=1, beta=0):
+- Pool 256, two repeats: clean quality ratio **0.9895 ± 0.0047** at **36.6% ± 10.4%** of Full-MC samples; alpha=.75 remains ~1.0002 at 64.5% cost; random remains ~0.9971 at 82.6% cost.
+- Pool 512, one repeat: clean **0.9173** quality at 35.0% cost; alpha=.75 **0.8857** at 20.4% cost; random **0.9591** at 64.5% cost.
+
+Thus the 128-candidate success must not be extrapolated to larger candidate sets.
+
+### Simply enlarging the audit head is not a fix
+A separate scale-aware audit-budget pilot tested larger heads/sentinel counts. It failed structurally:
+- pool256 Top32+8: clean ratio **0.9804**, random **0.9547**.
+- pool512 Top32+16: clean **0.8916**, random **0.9803**.
+- pool512 Top64+16: clean **0.9110**, random **0.9299**.
+
+The current certificate compares the audited best against the first learned outsider after the head. Enlarging the head moves this outsider deeper to a lower learned score and can therefore make the certificate *easier* to satisfy. Audit size tuning alone is not a principled solution.
+
+### Clean proposal ranking also degrades with candidate count
+Along exact Full-MC trajectories, the learned rank of the true winner changes sharply with pool size:
+- pool128: ranks `[1,57,87,2,2,42,1,8,1,32]`, mean **23.3**, max **87**, Top64 recall **0.9**.
+- pool256: `[1,70,79,141,2,47,2,9,2,46]`, mean **39.9**, max **141**, Top64 recall **0.7**.
+- pool512: `[1,144,81,173,2,48,13,160,11,83]`, mean **71.6**, max **173**, Top64 recall **0.5**.
+
+Several large-pool hard states have learned-top1 regret above 40–50 marginal-influence units. Therefore the scaling failure is **two coupled problems**: (1) the learned proposal itself becomes weaker on large candidate sets, and (2) the current audited residual certificate lacks population-aware coverage of the unseen outsider set.
+
+**Decision:** stop manual Top-K/sentinel tuning. The next P0 is large-candidate sequential hard-negative training for the proposal, followed separately by a population-aware statistical certificate whose confidence becomes stricter as the number of unseen outsiders grows.

@@ -104,3 +104,11 @@ A new session should start by reading `AGENTS.md`, `docs/RESEARCH_STATE.md`, `do
 - [x] Frozen prototype: `residual_q=1.0`, `residual_beta=0`, Top-16 + 8 sentinels, audit MC20, progressive 5→10→20→40 fast path.
 - [ ] Immediate: candidate pool 256 and 512 scaling under the frozen rule.
 - [ ] Then: multiple budgets and RIS/all-node scaling; do not return to manual trust-threshold tuning unless scaling exposes a new failure.
+
+## 2026-09-04 scaling override
+- [x] Stress current audited-residual method at candidate pools 256 and 512.
+- [x] Test naive scale-aware Top-K/sentinel expansion; reject it as structurally non-monotone.
+- [x] Diagnose exact-winner learned ranks across pools 128/256/512.
+- [ ] **P0 now:** large-candidate sequential hard-negative fine-tuning of the state-aware marginal predictor.
+- [ ] First success criterion: materially reduce pool512 winner mean-rank from 71.6 and raise Top64 recall from 0.5 toward >=0.8 without losing state-conditioning sensitivity.
+- [ ] Only after proposal improves: redesign a population-aware outsider certificate; do not resume ad hoc Top-K tuning.

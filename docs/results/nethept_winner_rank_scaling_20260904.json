@@ -1,0 +1,28 @@
+{
+  "dataset": "NetHEPT",
+  "protocol": "Full-MC trajectory winner rank under clean state-aware learned predictor; MC40, exact seed 260903, budget 10",
+  "pool_128": {
+    "ranks": [1, 57, 87, 2, 2, 42, 1, 8, 1, 32],
+    "mean_rank": 23.3,
+    "max_rank": 87,
+    "top16_recall": 0.6,
+    "top32_recall": 0.7,
+    "top64_recall": 0.9
+  },
+  "pool_256": {
+    "ranks": [1, 70, 79, 141, 2, 47, 2, 9, 2, 46],
+    "mean_rank": 39.9,
+    "max_rank": 141,
+    "top16_recall": 0.5,
+    "top32_recall": 0.5,
+    "top64_recall": 0.7
+  },
+  "pool_512": {
+    "ranks": [1, 144, 81, 173, 2, 48, 13, 160, 11, 83],
+    "mean_rank": 71.6,
+    "max_rank": 173,
+    "top16_recall": 0.4,
+    "top32_recall": 0.4,
+    "top64_recall": 0.5
+  }
+}
