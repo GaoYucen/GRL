@@ -147,3 +147,15 @@ Several large-pool hard states have learned-top1 regret above 40–50 marginal-i
 Interpretation: 128 不再是人为 toy pool，而是完整图上的 cheap screening budget。不同 RR 随机种子得到的 shortlist 并不完全相同，但独立 RR-greedy 的强 seed 在 3/3 repeats 中均被覆盖。当前可以认为 full-graph-input learning-augmented closure 已经跑通。
 
 Caveat: 这里的 50k RR baseline 是 prototype RR-sketch greedy，不等同于正式 IMM/OPIM-C 等带理论采样量的 paper-grade RIS baseline；不能据此声称优于 RIS。下一步先验证 shortlist budget M={64,128,256}，再做 k={5,10,20} 和多图/正式 RIS baseline。
+
+
+## 2026-09-05 P0 paper-value risk — official OPIM-C same-protocol comparison
+Official OPIM-C (Tang et al., SIGMOD 2018; source `tangj90/OPIM`, commit `344cc3d5eaa13d8cdf9a9e75722e49d341981e8d`) is now running on the same NetHEPT IC data used by GRL. For `k=10`, `eps=0.1`, its returned original-node seed set is `[267, 6024, 47, 66, 1241, 3210, 37, 1434, 12464, 156]` (internal GRL indices `[1265, 8595, 308, 410, 3219, 5753, 228, 3519, 13507, 892]`).
+
+Using exactly the three final-evaluation seeds from the existing full-graph closure (`1900401, 1901422, 1902443`) and `MC=1000`, OPIM-C obtains spread `504.017 / 501.763 / 500.568`, i.e. **502.116 ± 1.430**. The existing audited learning-augmented method is **500.940 ± 2.441**; full-graph independent 50k-RR greedy is **506.741 ± 3.533**; screened Full-MC40 is **508.468 ± 1.965**. Hence audited/OPIM-C = **0.99766**: quality is essentially the same at current Monte-Carlo resolution and must not be framed as an advantage over OPIM-C.
+
+Runtime exposes a more serious paper-value issue. Across the three existing full-graph repeats, RR screening takes **0.482 ± 0.116 s** and audited sequential selection takes **24.502 ± 1.633 s**, for about **24.984 s** screen+selection. The official OPIM-C executable takes about **0.602 s** for optimization; its graph-format/reverse-graph step takes about **0.069 s** and successfully writes the reverse graph (the formatter returns code 1 despite the successful output). Thus the current prototype is roughly **37× slower** in optimization-path wall time while producing comparable spread.
+
+**Interpretation:** the frozen method chain remains mechanically complete, but the paper-value closure is not. Before expanding to multi-graph, `k={5,10,20}`, or large ablations, we need a human decision on why learned advice is necessary relative to mature RIS. Plausible reframings are an expensive/nonstandard black-box influence oracle, a repeated-query/changing-state setting where learned representations can be amortized, or a safe fallible-advice methodology with a clearly motivated setting. Do not automatically add a new method module or locally tune runtime to hide this structural comparison.
+
+Evidence is saved at `outputs/baselines/opim_c_nethept_k10_eps01/same_protocol_eval.json` on the 4090 workspace.
