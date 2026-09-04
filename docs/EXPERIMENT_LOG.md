@@ -83,3 +83,19 @@ Values slightly above the Full-MC reference at intermediate corruption levels ar
 **Caveat:** quality ratios slightly above 1 are finite-MC / trajectory effects, not evidence of outperforming Full-MC greedy. This remains a 128-candidate prototype; full-graph/RIS and multi-dataset evidence are still required.
 
 **Compact artifact:** `docs/results/nethept_trust_calibration_multiseed_20260904.json`.
+
+## 2026-09-04 — Audited residual gate replaces Spearman trust score
+
+Held-out calibration showed that audit Spearman is not a reliable trust statistic: unsafe steps can have higher local learned-vs-exact Spearman than safe steps, and the conservative calibrated threshold drove clean-case fallback close to Full-MC cost. We therefore replaced the Spearman gate with an **audited residual gate**. The audit evaluates the learned head plus rank-spaced sentinel candidates, estimates the upper tail of `exact - learned` residuals, and trusts the learned ranking only when the audited best head candidate dominates the learned best outsider after adding this audited residual upper bound; sentinel surprise still forces distrust.
+
+The frozen prototype configuration is `residual_q=1.0`, `residual_beta=0`, audit Top-16 + 8 sentinels, audit MC20, followed by the validated progressive 5→10→20→40 fast path. Extra residual safety margins (`beta=0.5/1.0`) were too conservative and rapidly approached Full-MC cost.
+
+Five independent NetHEPT repeats (128-candidate shared pool, budget 10) give:
+- Clean predictor: quality ratio **1.0070 ± 0.0070**, **20,715 ± 1,997 samples = 41.9% ± 4.0%** of Full-MC, **0.8 ± 0.45 fallbacks**.
+- `alpha=0.5`: quality ratio **1.0079 ± 0.0063**, **18,944 ± 3,756 samples = 38.3% ± 7.6%**, **1.2 ± 1.3 fallbacks**.
+- `alpha=0.75`: quality ratio **1.0006 ± 0.0145**, **28,621 ± 5,010 samples = 57.9% ± 10.1%**, **3.8 ± 1.3 fallbacks**.
+- Random predictor `alpha=1`: quality ratio **1.0042 ± 0.0051**, **41,893 ± 3,821 samples = 84.8% ± 7.7%**, **7.8 ± 1.3 fallbacks**.
+
+Ratios slightly above 1 are finite-MC/trajectory noise and are not interpreted as outperforming Full-MC greedy. The important result is the cost response: useful predictions retain a large oracle saving, while degraded/random predictions automatically consume much more oracle work and preserve solution quality. The earlier Spearman gate is now retained as a failed/diagnostic ablation rather than the main method.
+
+**Compact artifact:** `docs/results/nethept_audited_residual_multiseed_20260904.json`.

@@ -95,4 +95,12 @@ The clean alpha=0 versus alpha=.5 cost ordering is not strictly monotone in this
 - Do not over-interpret quality ratios slightly above 1; they are finite-MC / trajectory effects.
 
 ## Session-resume instruction
-A new session should start by reading `AGENTS.md`, `docs/RESEARCH_STATE.md`, `docs/EXPERIMENT_LOG.md`, and this file. The immediate target is **held-out statistical trust calibration**, followed by multiple budgets and candidate/graph scaling.
+A new session should start by reading `AGENTS.md`, `docs/RESEARCH_STATE.md`, `docs/EXPERIMENT_LOG.md`, and this file. The held-out calibration diagnosis is complete: Spearman trust was rejected and the audited-residual gate is now the frozen main prototype. The immediate target is **candidate-pool 256/512 scaling**, followed by multiple budgets and graph/RIS scaling.
+
+
+## Latest override — audited residual gate frozen
+- [x] Held-out trust calibration diagnosis completed; local audit Spearman rejected as the primary trust statistic.
+- [x] Audited residual upper-bound gate implemented and validated over five independent 128-candidate repeats.
+- [x] Frozen prototype: `residual_q=1.0`, `residual_beta=0`, Top-16 + 8 sentinels, audit MC20, progressive 5→10→20→40 fast path.
+- [ ] Immediate: candidate pool 256 and 512 scaling under the frozen rule.
+- [ ] Then: multiple budgets and RIS/all-node scaling; do not return to manual trust-threshold tuning unless scaling exposes a new failure.

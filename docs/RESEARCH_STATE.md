@@ -72,3 +72,10 @@ Aggregate results:
 **Current bottleneck:** clean-case trust efficiency is variable. Across clean repeats, fallback count ranges 2–6/10 and sample fraction 41.4%–64.2%. Robustness is therefore no longer the first problem to solve; the next methodological task is **held-out/statistical trust calibration to reduce false distrust and efficiency variance without weakening the severe-failure fallback**.
 
 **Important caveat:** ratios above 1 are finite-MC / trajectory noise and must not be framed as outperforming Full-MC greedy. All current end-to-end results are still on a fixed 128-candidate prototype pool, not full-graph/RIS paper-scale evaluation.
+
+## 2026-09-04 verified update — audited residual gate becomes the main trust mechanism
+Held-out analysis invalidated local audit Spearman as the primary trust statistic: high local rank correlation does not guarantee that a strong outsider was not omitted. The main trust mechanism is therefore now an **audited residual upper-bound test** over predicted-head plus rank-spaced sentinel candidates.
+
+Frozen prototype rule: `residual_q=1.0`, `residual_beta=0`, Top-16 + 8 sentinels at MC20, followed by progressive 5→10→20→40 verification when trusted. Five independent NetHEPT repeats on the 128-candidate prototype show sample fraction rising from **41.9%±4.0%** for a clean predictor to **57.9%±10.1%** at strong corruption and **84.8%±7.7%** for a random predictor, while final spread remains within finite-MC variation of the same-seed Full-MC references.
+
+**Current interpretation:** the core consistency–robustness architecture is now empirically credible at the 128-candidate prototype scale. The next bottleneck is no longer trust-threshold tuning; it is **candidate-scale / graph-scale validation** and eventual replacement of the NetworkX MC prototype with a scalable RIS/all-node oracle.
