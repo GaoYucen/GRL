@@ -112,3 +112,19 @@ A new session should start by reading `AGENTS.md`, `docs/RESEARCH_STATE.md`, `do
 - [ ] **P0 now:** large-candidate sequential hard-negative fine-tuning of the state-aware marginal predictor.
 - [ ] First success criterion: materially reduce pool512 winner mean-rank from 71.6 and raise Top64 recall from 0.5 toward >=0.8 without losing state-conditioning sensitivity.
 - [ ] Only after proposal improves: redesign a population-aware outsider certificate; do not resume ad hoc Top-K tuning.
+
+## Current priority — Full-graph screened learning-augmented IM {#FULLGRAPH_ROUTE_20260905}
+
+Frozen main route:
+`Full graph -> cheap RR/RIS screening -> M=128 shortlist -> state-aware marginal proposal -> audited residual + progressive verification -> Full-MC fallback`.
+
+Current stage:
+`predictability ✅ -> state-awareness ✅ -> sequential verified solver ✅ -> robustness ✅ -> full-graph screening closure ✅ -> shortlist budget sensitivity <- NOW -> seed-budget sensitivity -> multi-graph / paper-grade RIS baseline -> ablations / theory`.
+
+Immediate tasks:
+1. M={64,128,256} sensitivity under independent RR screening/baseline; justify 128 as operating point.
+2. Freeze M, then k={5,10,20}.
+3. Add established RIS baseline and 2–3 standard IM graphs.
+4. Run final ablations: learned-only, progressive-only, audited+progressive, fallback, state-aware supervision.
+
+Direct 512-candidate exhaustive-search scaling is now an appendix/stress test rather than the main algorithmic route.

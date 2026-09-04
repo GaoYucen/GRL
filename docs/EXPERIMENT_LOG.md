@@ -128,3 +128,22 @@ Along exact Full-MC trajectories, the learned rank of the true winner changes sh
 Several large-pool hard states have learned-top1 regret above 40–50 marginal-influence units. Therefore the scaling failure is **two coupled problems**: (1) the learned proposal itself becomes weaker on large candidate sets, and (2) the current audited residual certificate lacks population-aware coverage of the unseen outsider set.
 
 **Decision:** stop manual Top-K/sentinel tuning. The next P0 is large-candidate sequential hard-negative training for the proposal, followed separately by a population-aware statistical certificate whose confidence becomes stricter as the number of unseen outsiders grows.
+
+## 2026-09-05 — Full-graph RR screening + 128 shortlist 闭环通过 {#FULLGRAPH_RR_SCREENING_20260905}
+
+当前主线从“人为 Top-degree 128”升级为完整图输入：`NetHEPT 15,233 nodes -> independent RR screening -> Top-128 shortlist -> state-aware marginal proposal -> audited residual + progressive verification -> Full-MC fallback`。
+
+3 个独立 repeat（screening RR 与 full-graph RR baseline 使用独立 50k RR samples）结果：
+- independent RR-greedy seed recall in Top-128: **1.0000 ± 0.0000**；
+- full-graph independent RR-sketch greedy spread: **506.7407 ± 3.5330**；
+- screened Full-MC40 spread: **508.4677 ± 1.9645**；
+- audited/progressive spread: **500.9403 ± 2.4410**；
+- audited / screened Full-MC quality: **0.9852 ± 0.0035**；
+- audited / full-graph RR-sketch quality: **0.9886 ± 0.0109**；
+- expensive MC sample fraction: **0.5908 ± 0.0846**（约 40.9% reduction）；
+- fallback: **4.0 ± 1.63 / 10 steps**；
+- pairwise shortlist Jaccard: **0.6954 ± 0.0092**。
+
+Interpretation: 128 不再是人为 toy pool，而是完整图上的 cheap screening budget。不同 RR 随机种子得到的 shortlist 并不完全相同，但独立 RR-greedy 的强 seed 在 3/3 repeats 中均被覆盖。当前可以认为 full-graph-input learning-augmented closure 已经跑通。
+
+Caveat: 这里的 50k RR baseline 是 prototype RR-sketch greedy，不等同于正式 IMM/OPIM-C 等带理论采样量的 paper-grade RIS baseline；不能据此声称优于 RIS。下一步先验证 shortlist budget M={64,128,256}，再做 k={5,10,20} 和多图/正式 RIS baseline。
