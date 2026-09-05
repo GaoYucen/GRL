@@ -115,3 +115,13 @@ Runtime exposes a more serious paper-value issue. Across the three existing full
 **Interpretation:** the frozen method chain remains mechanically complete, but the paper-value closure is not. Before expanding to multi-graph, `k={5,10,20}`, or large ablations, we need a human decision on why learned advice is necessary relative to mature RIS. Plausible reframings are an expensive/nonstandard black-box influence oracle, a repeated-query/changing-state setting where learned representations can be amortized, or a safe fallible-advice methodology with a clearly motivated setting. Do not automatically add a new method module or locally tune runtime to hide this structural comparison.
 
 Evidence is saved at `outputs/baselines/opim_c_nethept_k10_eps01/same_protocol_eval.json` on the 4090 workspace.
+
+## 2026-09-05 P0-RESCUE — classical RR rescues runtime, learning value unresolved
+
+A same-protocol rescue study replaced the old ~24.5 s sequential Monte-Carlo audit with independent RR verification inside the frozen full-graph-screened M=128 shortlist. Across three independent final-evaluation seeds, pure-RR verification gave: 1k RR = 335.657 ± 77.912 at 0.484 s; 2k = 461.309 ± 27.889 at 0.495 s; 5k = 453.223 ± 25.848 at 0.518 s; 10k = 486.321 ± 11.505 at 0.559 s; 20k = 502.446 ± 7.264 at 0.652 s; 50k = **506.588 ± 2.302 at 0.909 ± 0.037 s**.
+
+The 50k verifier reaches **99.51% of official IMM spread** (IMM 509.081 ± 0.842 at ~0.287 s) and repairs the old GRL path (500.940 ± 2.441 at ~24.984 s), while 20k RR is close to the OPIM-C operating point (502.446 / 0.652 s versus 502.116 ± 1.430 / ~0.672 s). However, this rescue is entirely classical RR computation; 50k screening + 50k independent verification is not evidence of lower sampling cost than mature RIS.
+
+The current tuned state-aware learned marginal predictor does not yet reduce the RR evidence needed for near-IMM quality. Learned-only remained poor (~324–333 spread in observed repeats), and hard learned-Top16 guidance was worse than pure RR at each completed low-budget pilot (1k: 378.812 vs 424.797; 2k: 384.294 vs 433.680; 5k: 374.293 vs 478.747; 10k: 402.223 vs 496.804).
+
+**Paper-level judgment:** the engineering runtime bottleneck is largely solved, but the learning-value hypothesis in vanilla static IC is not. The current route cannot claim better quality, runtime, or demonstrated sample efficiency from learning relative to mature RIS. This is a **YELLOW / human paper-positioning review** boundary. Do not expand to multi-graph, k-sensitivity, broad ablations, a new predictor architecture, RL, or a new IM setting without human authorization.

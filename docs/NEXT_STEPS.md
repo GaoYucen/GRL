@@ -140,3 +140,13 @@ Runtime exposes a more serious paper-value issue. Across the three existing full
 **Interpretation:** the frozen method chain remains mechanically complete, but the paper-value closure is not. Before expanding to multi-graph, `k={5,10,20}`, or large ablations, we need a human decision on why learned advice is necessary relative to mature RIS. Plausible reframings are an expensive/nonstandard black-box influence oracle, a repeated-query/changing-state setting where learned representations can be amortized, or a safe fallible-advice methodology with a clearly motivated setting. Do not automatically add a new method module or locally tune runtime to hide this structural comparison.
 
 Evidence is saved at `outputs/baselines/opim_c_nethept_k10_eps01/same_protocol_eval.json` on the 4090 workspace.
+
+## 2026-09-05 paper-positioning gate — autonomous P0 paused
+
+P0-RESCUE shows that independent RR verification can repair the old runtime path (50k RR verifier: **506.588 ± 2.302 spread at 0.909 ± 0.037 s**; 20k: **502.446 ± 7.264 at 0.652 s**), but the gain is classical-only. The current tuned state-aware learned predictor has not demonstrated lower RR evidence and hard learned guidance worsens low-budget verification in the completed pilot.
+
+Therefore the next step is **HUMAN-DECISION**, not another automatic experiment. Before any P1 multi-graph / `k={5,10,20}` / final-ablation sweep, decide whether to:
+1. keep vanilla static IC and substantially narrow/remove the learning-efficiency claim; or
+2. explicitly authorize a scientifically motivated setting where fallible learned advice has a necessary role.
+
+Until that decision, do not perform more local runtime/predictor rescue, add RL, add a new predictor architecture, or pivot to repeated-query/dynamic/black-box IM automatically.
